@@ -2,6 +2,11 @@ var appConfig = require('./config/snowconfig');
 var nodeMailer = require('nodemailer');
 var ejs = require('ejs');
 var snowTaskEmailService = require('./services/snowTaskEmailService');
+//var puppeteer = require('puppeteer');
+//var fs = require('fs')
+
+
+
 
 
 function sendEmail() {
@@ -10,6 +15,9 @@ function sendEmail() {
     var starttimeDiff = Math.abs(firstDay.getTime() - date.getTime());
     var startdiffdays = Math.ceil(starttimeDiff / (1000 * 3600 * 24));
     var queryobjfortabularmail = { "startdiff": startdiffdays - 1, "enddiff": "0", "assignmentgroup": appConfig.accessAndCompliance };
+
+    var _browser;
+    var _page;
 
     console.log("difference of days" + startdiffdays)
     // We can add the assignment group here
@@ -31,29 +39,16 @@ function sendEmail() {
             //     if (err) {
             //         return console.log(err);
             //     }
-
-
             //     console.log("The file was saved!");
-
-
-
-
-            //     // puppeteer.launch().then(browser => {
-            //     //     // some processing
-            //     //     return browser.newPage();
-            //     // }).then(page => {
-            //     //     return page.goto('file:///home/harshit/core/server/temp/template.html');
-
-            //     // }).then(page =>{page.pdf({
-            //     //     path: './test.pdf',
-            //     //     format: 'A4',
-            //     //     margin: {
-            //     //         top: "20px",
-            //     //         left: "20px",
-            //     //         right: "20px",
-            //     //         bottom: "20px"
-            //     //     }
-            //     // })}).then(browser.close());
+            //     puppeteer
+            //         .launch({headless: true, args: ['--no-sandbox'] })
+            //         .then(browser => (_browser = browser))
+            //         .then(browser => (_page = browser.newPage()))
+            //         .then(page => page.goto(appConfig.pathTopdf))
+            //         .then(() => _page)
+            //         .then(page => page.emulateMedia('screen'))
+            //         .then(page => page.pdf({ path: './temp/emailreport.pdf' }))
+            //         .then(() => _browser.close());
 
             // });
 
@@ -65,7 +60,7 @@ function sendEmail() {
 
 
             var MailOptions = {
-                from: 'harshit.narang@relevancelab.com',
+                from: appConfig.SenderEmailAddress,
                 to: appConfig.mailList,
                 subject: 'Service Now BOT Productivity Report',
                 text: 'Service Now Report for the current month',

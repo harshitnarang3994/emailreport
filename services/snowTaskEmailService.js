@@ -8,6 +8,7 @@ var fs = require('fs')
 var Promise = require('promise');
 var csv = require("csvtojson");
 
+
 var snowtaskEmailService = module.exports = {};
 
 var username = appConfig.username;
@@ -635,7 +636,7 @@ function calculateIncidentStatisticsforcurrentMonth(taskData, url, option, callb
                 var index = new Date(item["sys_updated_on"]).getDate();
 
 
-                // Here just check for the Taleo condition
+                // Here just check for the Taleo condition  
                 if ((item["incident_state"] === "6" || item["incident_state"] === "7") && isautomated === "Taleo") {
 
                     // console.log(index);
