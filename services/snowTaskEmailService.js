@@ -409,6 +409,12 @@ function calculateTaskStatisticsForPastSixMOnths(taskandincidentData, assignment
                                 objforlastday.shortdescription = isTerminate;
                                 objforlastday.sysid = data[i]["sys_id"];
 
+                                if (data[i]["assigned_to"] === "") {
+                                    objforlastday.assignedto = "Unassigned";
+                                } else {
+                                    objforlastday.assignedto = data[i]["assigned_to"];
+                                }
+
                                 arrforlastday.push(objforlastday);
                                 countoffailtaskLastDay++
                             } else if (data[i]["state"] === "Closed Complete") {
@@ -425,6 +431,12 @@ function calculateTaskStatisticsForPastSixMOnths(taskandincidentData, assignment
                             objforlastday.tasknumber = data[i]["number"];
                             objforlastday.shortdescription = data[i]["short_description"];
                             objforlastday.sysid = data[i]["sys_id"];
+
+                            if (data[i]["assigned_to"] === "") {
+                                objforlastday.assignedto = "Unassigned";
+                            } else {
+                                objforlastday.assignedto = data[i]["assigned_to"];
+                            }
 
                             arrforlastday.push(objforlastday);
                             countoffailtaskLastDay++
@@ -457,6 +469,13 @@ function calculateTaskStatisticsForPastSixMOnths(taskandincidentData, assignment
                                 objforlastday.shortdescription = isTerminate;
                                 objforlastday.sysid = data[i]["sys_id"];
 
+
+                                if (data[i]["assigned_to"] === "") {
+                                    objforlastday.assignedto = "Unassigned";
+                                } else {
+                                    objforlastday.assignedto = data[i]["assigned_to"];
+                                }
+
                                 arrforlastday.push(objforlastday);
                                 countoffailtaskLastDay++
                             } else if (data[i]["state"] === "Closed Complete") {
@@ -473,6 +492,13 @@ function calculateTaskStatisticsForPastSixMOnths(taskandincidentData, assignment
                             objforlastday.tasknumber = data[i]["number"];
                             objforlastday.shortdescription = data[i]["short_description"];
                             objforlastday.sysid = data[i]["sys_id"];
+
+
+                            if (data[i]["assigned_to"] === "") {
+                                objforlastday.assignedto = "Unassigned";
+                            } else {
+                                objforlastday.assignedto = data[i]["assigned_to"];
+                            }
 
                             arrforlastday.push(objforlastday);
                             countoffailtaskLastDay++
@@ -808,6 +834,11 @@ function calculateIncidentStatisticsForPastSixMonths(datas, option, assignmentgr
                             objforlastday.shortdescription = "Taleo";
                             objforlastday.sys_id = data[i]["sys_id"];
 
+                            if (data[i]["assigned_to"] === "") {
+                                objforlastday.assignedto = "Unassigned";
+                            } else {
+                                objforlastday.assignedto = data[i]["assigned_to"];
+                            }
                             //here for taleo there will be one bot only
 
                             datas.arrforLastdayData.push(objforlastday);
@@ -839,7 +870,11 @@ function calculateIncidentStatisticsForPastSixMonths(datas, option, assignmentgr
                             objforlastday.tasknumber = data[i]["number"];
                             objforlastday.shortdescription = "Taleo";
                             objforlastday.sys_id = data[i]["sys_id"];
-
+                            if (data[i]["assigned_to"] === "") {
+                                objforlastday.assignedto = "Unassigned";
+                            } else {
+                                objforlastday.assignedto = data[i]["assigned_to"];
+                            }
                             //here for taleo there will be one bot only
 
                             datas.arrforLastdayData.push(objforlastday);
@@ -871,9 +906,9 @@ function calculateIncidentStatisticsForPastSixMonths(datas, option, assignmentgr
                             countoffailIncidentLastWeek++
                         }
 
-                         if ( data[i]["incident_state"] === "Resolved" || data[i]["incident_state"] === "Closed") {
-                        countoflastweekInboundIncident++;
-                         }
+                        if (data[i]["incident_state"] === "Resolved" || data[i]["incident_state"] === "Closed") {
+                            countoflastweekInboundIncident++;
+                        }
 
 
                     }

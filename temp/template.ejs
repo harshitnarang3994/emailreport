@@ -567,8 +567,7 @@
                         <th>Ticket Number</th>
                         <th> BOT Name</th>
                         <th>BOT Status</th>
-
-
+                        <th>Person Intervened</th>
                     </tr>
 
                     <% for (var i = 0; i < failedTasksAndIncidentLastday.length; /* I save the data in a variable 'quotation', I don't know how you named your variable  */  i++) { %>
@@ -589,6 +588,9 @@
                         </td>
                         <td>
                             <%= failedTasksAndIncidentLastday[i].reason %>
+                        </td>
+                        <td>
+                            <%= failedTasksAndIncidentLastday[i].assignedto %>
                         </td>
 
 
