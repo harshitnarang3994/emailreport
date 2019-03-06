@@ -46,13 +46,13 @@ function sendEmail() {
             //         .then(browser => (_page = browser.newPage()))
             //         .then(page => page.goto(appConfig.pathTopdf))
             //         .then(() => _page)
-            //         .then(page => page.emulateMedia('screen'))
             //         .then(page => page.pdf({ path: './temp/emailreport.pdf' }))
             //         .then(() => _browser.close());
 
             // });
 
-
+            // For graph section we can append the original html with the graph div 
+            // So there will be two html one for email part and other for the pdf part  
 
 
 

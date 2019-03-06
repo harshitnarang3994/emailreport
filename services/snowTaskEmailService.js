@@ -127,24 +127,42 @@ function calculatethefailedstatusBycallingScholastic(taskandincidentdata, callba
 
             //appConfig[arritem.shortdescription].botid
 
-            getRequest(appConfig.scholasticApi + "/bot/" + appConfig[arritem.shortdescription].botid + "/bot-history", token)
-                .then(function (result) {
-                    var obj = JSON.parse(result);
-                    var flag = 0
+            getRequest(appConfig.scholasticApi + "/bot", token)
+                .then(function (botresult) {
+                    var id = ""
+                    var botobj = JSON.parse(botresult);
 
-                    obj.botHistory.forEach(function (item) {
+                    botobj.bots.forEach(function (item) {
 
-                        if (item.auditTrailConfig.
-                            serviceNowTicketRefObj.ticketNo === arritem.sysid) {
-                            flag = 1;
+                        if (item.id === appConfig[arritem.shortdescription].botid) {
+                            id = item._id;
                         }
                     })
-                    if (flag === 1) {
-                        arritem.reason = "Triggered but failed";
-                    }
-                    else {
-                        arritem.reason = "Not Triggered";
-                    }
+
+                    getRequest(appConfig.scholasticApi + "/bot/" + id + "/bot-history", token)
+                        .then(function (result) {
+
+                            var obj = JSON.parse(result);
+                            var flag = 0
+                            obj.botHistory.forEach(function (item) {
+
+                                if (item.auditTrailConfig.
+                                    serviceNowTicketRefObj.ticketNo === arritem.sysid) {
+                                    flag = 1;
+                                }
+                            })
+                            if (flag === 1) {
+                                arritem.reason = "Triggered but failed";
+                            }
+                            else {
+                                arritem.reason = "Not Triggered";
+                            }
+
+
+                        })
+
+
+
                     // arritem.push(objforlastday);
                     cb();
                 })
@@ -1543,7 +1561,7 @@ function getRequest(url, token) {
                 throw new Error(error);
                 reject(error);
             } else {
-                console.log(body);
+            //    console.log(body);
                 resolve(body);
             }
         });
