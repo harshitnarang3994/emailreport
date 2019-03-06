@@ -7,6 +7,7 @@ var request = require('request');
 var fs = require('fs')
 var Promise = require('promise');
 var csv = require("csvtojson");
+var logger = require('../logger/logger').successlog;
 
 
 var snowtaskEmailService = module.exports = {};
@@ -121,14 +122,15 @@ function calculatethefailedstatusBycallingScholastic(taskandincidentdata, callba
     // Iterate array and make get api call (taskandincidentdata.arrforlastday)
 
     makepostrequest(appConfig.scholasticApi + "/auth/signin").then(function (token) {
-        async.forEach(taskandincidentdata.arrforLastdayData, function (arritem, cb) {
 
-            console.log(appConfig.scholasticApi + "/bot/" + appConfig[arritem.shortdescription].botid + "/bot-history")
+        getRequest(appConfig.scholasticApi + "/bot", token)
+            .then(function (botresult) {
+                async.forEach(taskandincidentdata.arrforLastdayData, function (arritem, cb) {
 
-            //appConfig[arritem.shortdescription].botid
+                    console.log(appConfig.scholasticApi + "/bot/" + appConfig[arritem.shortdescription].botid + "/bot-history")
+                    logger.debug(appConfig.scholasticApi + "/bot/" + appConfig[arritem.shortdescription].botid + "/bot-history")
+                    //appConfig[arritem.shortdescription].botid
 
-            getRequest(appConfig.scholasticApi + "/bot", token)
-                .then(function (botresult) {
                     var id = ""
                     var botobj = JSON.parse(botresult);
 
@@ -138,14 +140,17 @@ function calculatethefailedstatusBycallingScholastic(taskandincidentdata, callba
                             id = item._id;
                         }
                     })
-
+                    logger.debug("id=" + id)
                     getRequest(appConfig.scholasticApi + "/bot/" + id + "/bot-history", token)
                         .then(function (result) {
-
+                            logger.debug(appConfig.scholasticApi + "/bot/" + id + "/bot-history")
                             var obj = JSON.parse(result);
                             var flag = 0
                             obj.botHistory.forEach(function (item) {
+                                logger.debug("ticket NUmber" + item.auditTrailConfig.
+                                    serviceNowTicketRefObj.ticketNo)
 
+                                    logger.debug(arritem.sysid)
                                 if (item.auditTrailConfig.
                                     serviceNowTicketRefObj.ticketNo === arritem.sysid) {
                                     flag = 1;
@@ -165,21 +170,19 @@ function calculatethefailedstatusBycallingScholastic(taskandincidentdata, callba
 
                     // arritem.push(objforlastday);
                     cb();
+
+
+
+                }, function (err) {
+                    if (err) {
+                        callback(err, null);
+                    } else {
+                        callback(null, taskandincidentdata);
+                    }
+
                 })
-
-
-        }, function (err) {
-            if (err) {
-                callback(err, null);
-            } else {
-                callback(null, taskandincidentdata);
-            }
-
-        })
-    }).catch(function (err) {
-        console.log("error detected" + err);
+            })
     })
-
 
 
 }
@@ -1561,7 +1564,7 @@ function getRequest(url, token) {
                 throw new Error(error);
                 reject(error);
             } else {
-            //    console.log(body);
+                //    console.log(body);
                 resolve(body);
             }
         });

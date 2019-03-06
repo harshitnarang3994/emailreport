@@ -2,6 +2,7 @@ var appConfig = require('./config/snowconfig');
 var nodeMailer = require('nodemailer');
 var ejs = require('ejs');
 var snowTaskEmailService = require('./services/snowTaskEmailService');
+var logger = require('./logger/logger').successlog;
 //var puppeteer = require('puppeteer');
 //var fs = require('fs')
 
@@ -19,9 +20,11 @@ function sendEmail() {
     var _browser;
     var _page;
 
+
+    logger.debug("difference of days" + startdiffdays)
     console.log("difference of days" + startdiffdays)
     // We can add the assignment group here
-
+    logger.debug("SendEmail job started")
     console.log("SendEmail job started");
     snowTaskEmailService.saveSnowTask(queryobjfortabularmail.startdiff, queryobjfortabularmail.enddiff, queryobjfortabularmail.assignmentgroup, function (err, result) {
 
@@ -82,6 +85,11 @@ function sendEmail() {
                 {
                     filename: 'automationstatisticspastSixmonthsstackedBarChart.png',
                     path: __dirname + '/temp/automationstatisticspastSixmonthsstackedBarChart.png',
+                    cid: 'image4'
+                },
+                {
+                    filename: 'logger',
+                    path: __dirname + '/logs/sendemail.log.2019-03-06',
                     cid: 'image4'
                 }]
             }
