@@ -126,7 +126,7 @@ function calculatethefailedstatusBycallingScholastic(taskandincidentdata, callba
         getRequest(appConfig.scholasticApi + "/bot", token)
             .then(function (botresult) {
                 async.forEach(taskandincidentdata.arrforLastdayData, function (arritem, cb) {
-
+                    console.log("Sys_id"+arritem.sysid)
                     console.log(appConfig.scholasticApi + "/bot/" + appConfig[arritem.shortdescription].botid + "/bot-history")
                     logger.debug(appConfig.scholasticApi + "/bot/" + appConfig[arritem.shortdescription].botid + "/bot-history")
                     //appConfig[arritem.shortdescription].botid
@@ -853,7 +853,7 @@ function calculateIncidentStatisticsForPastSixMonths(datas, option, assignmentgr
                             objforlastday.name = "Email Network Request"
                             objforlastday.tasknumber = data[i]["number"];
                             objforlastday.shortdescription = "Taleo";
-                            objforlastday.sys_id = data[i]["sys_id"];
+                            objforlastday.sysid = data[i]["sys_id"];
 
                             if (data[i]["assigned_to"] === "") {
                                 objforlastday.assignedto = "Unassigned";
@@ -890,7 +890,7 @@ function calculateIncidentStatisticsForPastSixMonths(datas, option, assignmentgr
                             objforlastday.name = "Email Network Request"
                             objforlastday.tasknumber = data[i]["number"];
                             objforlastday.shortdescription = "Taleo";
-                            objforlastday.sys_id = data[i]["sys_id"];
+                            objforlastday.sysid = data[i]["sys_id"];
                             if (data[i]["assigned_to"] === "") {
                                 objforlastday.assignedto = "Unassigned";
                             } else {
