@@ -3,8 +3,8 @@ var nodeMailer = require('nodemailer');
 var ejs = require('ejs');
 var snowTaskEmailService = require('./services/snowTaskEmailService');
 var logger = require('./logger/logger').successlog;
-var puppeteer = require('puppeteer');
-var fs = require('fs')
+//var puppeteer = require('puppeteer');
+//var fs = require('fs')
 
 
 
@@ -16,7 +16,7 @@ function sendEmail() {
     var starttimeDiff = Math.abs(firstDay.getTime() - date.getTime());
     var startdiffdays = Math.ceil(starttimeDiff / (1000 * 3600 * 24));
     var queryobjfortabularmail = { "startdiff": startdiffdays - 1, "enddiff": "0", "assignmentgroup": appConfig.accessAndCompliance };
-
+    var date = new Date();
     var _browser;
     var _page;
 
@@ -67,21 +67,21 @@ function sendEmail() {
 
                 '</div>'
 
-            fs.writeFile("./temp/template.html", html2, function (err) {
-                if (err) {
-                    return console.log(err);
-                }
-                console.log("The file was saved!");
-                puppeteer
-                    .launch({ headless: true, args: ['--no-sandbox'] })
-                    .then(browser => (_browser = browser))
-                    .then(browser => (_page = browser.newPage()))
-                    .then(page => page.goto(appConfig.pathTopdf))
-                    .then(() => _page)
-                    .then(page => page.pdf({ path: './temp/emailreport.pdf', format: 'A4' }))
-                    .then(() => _browser.close());
+            // fs.writeFile("./temp/template.html", html2, function (err) {
+            //     if (err) {
+            //         return console.log(err);
+            //     }
+            //     console.log("The file was saved!");
+            //     puppeteer
+            //         .launch({ headless: true, args: ['--no-sandbox'] })
+            //         .then(browser => (_browser = browser))
+            //         .then(browser => (_page = browser.newPage()))
+            //         .then(page => page.goto(appConfig.pathTopdf))
+            //         .then(() => _page)
+            //         .then(page => page.pdf({ path: './temp/emailreport.pdf', format: 'A4' }))
+            //         .then(() => _browser.close());
 
-            });
+            // });
 
             // For graph section we can append the original html with the graph div 
             // So there will be two html one for email part and other for the pdf part  
@@ -145,12 +145,7 @@ function sendEmail() {
                 },
                 {
                     filename: 'logger',
-                    path: __dirname + '/logs/sendemail.log.2019-03-06'
-
-                },
-                {
-                    filename: 'report',
-                    path: __dirname + '/temp/emailreport.pdf'
+                    path: __dirname + '/logs/sendemail.log.'+ date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate() 
 
                 }]
             }
