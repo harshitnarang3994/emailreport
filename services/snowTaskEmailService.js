@@ -141,26 +141,32 @@ function calculatethefailedstatusBycallingScholastic(taskandincidentdata, callba
                         }
                     })
                     logger.debug("id=" + id)
-                    logger.debug("bot name" + appConfig[arritem.shortdescription])
+                    // logger.debug("bot name" + appConfig[arritem.shortdescription])
+                    console.log(appConfig.scholasticApi + "/bot/" + id + "/bot-history?page=1&pageSize=100&sortBy=startedOn&sortOrder=desc")
                     getRequest(appConfig.scholasticApi + "/bot/" + id + "/bot-history?page=1&pageSize=100&sortBy=startedOn&sortOrder=desc", token)
                         .then(function (result) {
-                            logger.debug(appConfig.scholasticApi + "/bot/" + id + "/bot-history?page=1&pageSize=100&sortBy=startedOn&sortOrder=desc")
+                            //  logger.debug(appConfig.scholasticApi + "/bot/" + id + "/bot-history?page=1&pageSize=100&sortBy=startedOn&sortOrder=desc")
                             var obj = JSON.parse(result);
-                            var flag = 0
+                            var flag = false;
                             obj.botHistory.forEach(function (item) {
+
+                                
                                 logger.debug("ticket NUmber" + item.auditTrailConfig.
                                     serviceNowTicketRefObj.ticketNo)
 
                                 logger.debug(arritem.sysid)
                                 if (item.auditTrailConfig.
                                     serviceNowTicketRefObj.ticketNo === arritem.sysid) {
-                                    flag = 1;
+                                    logger.debug("success")
+                                    flag = true;
                                 }
                             })
-                            if (flag === 1) {
+                            if (flag) {
+                                logger.debug("TRiggered but failed")
                                 arritem.reason = "Triggered but failed";
                             }
                             else {
+                                logger.debug("Not Triggered")
                                 arritem.reason = "Not Triggered";
                             }
 
@@ -178,6 +184,7 @@ function calculatethefailedstatusBycallingScholastic(taskandincidentdata, callba
                     if (err) {
                         callback(err, null);
                     } else {
+                        logger.debug("array last day" + taskandincidentdata.arrforLastdayData)
                         callback(null, taskandincidentdata);
                     }
 
