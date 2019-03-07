@@ -5,36 +5,6 @@
 
 
     <style>
-        .uppertable {
-            border-collapse: collapse;
-            width: 90%;
-
-        }
-
-        .font-family {
-            letter-spacing: 2px;
-            font-family: Montserrat, sans-serif;
-        }
-
-        tr:nth-child(odd) {
-            background: #0000001c;
-        }
-
-        .uppertable th,
-        .uppertable td {
-            padding: 8px;
-            text-align: center;
-            border-bottom: 1px solid #ddd;
-        }
-
-
-
-        .uppertable th {
-            background-color: rgb(108, 122, 108);
-            color: white;
-        }
-
-
         /* Bootstrap */
 
 
@@ -47,19 +17,22 @@
 
 
 
-        @media print, screen and (min-width: 768px) {
+        @media print,
+        screen and (min-width: 768px) {
             .container {
                 width: 547px;
             }
         }
 
-        @media print, screen and (min-width: 992px) {
+        @media print,
+        screen and (min-width: 992px) {
             .container {
                 width: 970px;
             }
         }
 
-        @media print, screen and (min-width: 1200px) {
+        @media print,
+        screen and (min-width: 1200px) {
             .container {
                 width: 900px;
             }
@@ -197,7 +170,8 @@
         }
 
 
-        @media print, screen and (min-width: 768px) {
+        @media print,
+        screen and (min-width: 768px) {
 
             .col-sm-1,
             .col-sm-2,
@@ -268,7 +242,8 @@
 
         }
 
-        @media print, screen and (min-width: 992px) {
+        @media print,
+        screen and (min-width: 992px) {
 
             .col-md-1,
             .col-md-2,
@@ -334,7 +309,8 @@
             }
         }
 
-        @media print, screen and (min-width: 1200px) {
+        @media print,
+        screen and (min-width: 1200px) {
 
             .col-lg-1,
             .col-lg-2,
@@ -401,69 +377,122 @@
 
         }
 
-
-
-        .dashboard-stats__item {
-            position: relative;
-            overflow: hidden;
-            padding: 30px 20px;
-            margin-bottom: 15px;
-            border-radius: 38px;
-            max-height: 72px;
-            min-height: 72px;
-            box-shadow: 4px 5px #ccc;
+        @media print {
+            div {
+                page-break-inside: avoid;
+            }
         }
 
 
+        @media print,
+        screen {
+
+            .uppertable {
+                border-collapse: collapse;
+                width: 90%;
+                -webkit-print-color-adjust: exact;
+
+            }
+
+            .font-family {
+                letter-spacing: 2px;
+                font-family: Montserrat, sans-serif;
+                -webkit-print-color-adjust: exact;
+            }
+
+            tr:nth-child(odd) {
+                background: #0000001c;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .uppertable th,
+            .uppertable td {
+                padding: 8px;
+                text-align: center;
+                border-bottom: 1px solid #ddd;
+                -webkit-print-color-adjust: exact;
+            }
 
 
-        .dashboard-stats__item>.fa {
-            position: absolute;
-            bottom: -14%;
-            /*-20*/
-            left: 0%;
-            /*-5*/
-            font-size: 100px;
-            color: hsla(0, 0%, 100%, .15);
-        }
 
-        .dashboard-stats__item.dashboard-stats__item_blue {
-            background-color: #00c0ef
-        }
+            .uppertable th {
+                background-color: rgb(108, 122, 108);
+                color: white;
+                -webkit-print-color-adjust: exact;
+            }
 
-        .dashboard-stats__item.dashboard-stats__item_red {
-            background-color: #ef5350
-        }
 
-        .dashboard-stats__item.dashboard-stats__item_orange {
-            background-color: #ffa726
-        }
+            .dashboard-stats__item {
+                position: relative;
+                overflow: hidden;
+                padding: 30px 20px;
+                margin-bottom: 15px;
+                border-radius: 38px;
+                max-height: 72px;
+                min-height: 72px;
+                box-shadow: 4px 5px #ccc;
+                -webkit-print-color-adjust: exact;
+            }
 
-        .dashboard-stats__item.dashboard-stats__item_green {
-            background-color: #66bb6a
-        }
 
-        .dashboard-stats__item.dashboard-stats__item_bg-blue {
-            background-color: #2980b9
-        }
 
-        .dashboard-stats__title {
-            margin: 0;
-            text-align: center;
-            font-size: 34px;
-            font-weight: 300;
-            color: #fff
-        }
 
-        .dashboard-stats__title>small {
-            display: block;
-            font-size: 14px;
-            text-transform: uppercase;
-            color: #fff;
-        }
+            .dashboard-stats__item>.fa {
+                position: absolute;
+                bottom: -14%;
+                /*-20*/
+                left: 0%;
+                /*-5*/
+                font-size: 100px;
+                color: hsla(0, 0%, 100%, .15);
+                -webkit-print-color-adjust: exact;
+            }
 
-        .fa-cogs:before {
-            content: "\f085"
+            .dashboard-stats__item.dashboard-stats__item_blue {
+                background-color: #00c0ef;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .dashboard-stats__item.dashboard-stats__item_red {
+                background-color: #ef5350;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .dashboard-stats__item.dashboard-stats__item_orange {
+                background-color: #ffa726;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .dashboard-stats__item.dashboard-stats__item_green {
+                background-color: #66bb6a;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .dashboard-stats__item.dashboard-stats__item_bg-blue {
+                background-color: #2980b9;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .dashboard-stats__title {
+                margin: 0;
+                text-align: center;
+                font-size: 34px;
+                font-weight: 300;
+                color: #fff;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .dashboard-stats__title>small {
+                display: block;
+                font-size: 14px;
+                text-transform: uppercase;
+                color: #fff;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .fa-cogs:before {
+                content: "\f085"
+            }
         }
     </style>
 
@@ -837,7 +866,7 @@
          <%}%> -->
 
 
-            <div>
+            <!-- <div>
                 <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
                     <div style="background-color:aqua;   border-bottom-left-radius:50%;
             border-bottom-right-radius:50%;">
@@ -868,7 +897,7 @@
                     <img src="cid:image3" style="background-color: antiquewhite;width: 430px;">
                 </div>
 
-            </div>
+            </div> -->
         </div>
 
     </div>

@@ -126,7 +126,7 @@ function calculatethefailedstatusBycallingScholastic(taskandincidentdata, callba
         getRequest(appConfig.scholasticApi + "/bot", token)
             .then(function (botresult) {
                 async.forEach(taskandincidentdata.arrforLastdayData, function (arritem, cb) {
-                    console.log("Sys_id"+arritem.sysid)
+                    console.log("Sys_id" + arritem.sysid)
                     console.log(appConfig.scholasticApi + "/bot/" + appConfig[arritem.shortdescription].botid + "/bot-history")
                     logger.debug(appConfig.scholasticApi + "/bot/" + appConfig[arritem.shortdescription].botid + "/bot-history")
                     //appConfig[arritem.shortdescription].botid
@@ -150,7 +150,7 @@ function calculatethefailedstatusBycallingScholastic(taskandincidentdata, callba
                                 logger.debug("ticket NUmber" + item.auditTrailConfig.
                                     serviceNowTicketRefObj.ticketNo)
 
-                                    logger.debug(arritem.sysid)
+                                logger.debug(arritem.sysid)
                                 if (item.auditTrailConfig.
                                     serviceNowTicketRefObj.ticketNo === arritem.sysid) {
                                     flag = 1;
@@ -328,7 +328,9 @@ function calculateTaskStatisticsforcurrentMonth(url, option, urlBasedonOption, c
             })
 
             console.log("automated Task" + countCurrentMonthTaskautomated);
+            logger.debug("automated Task" + countCurrentMonthTaskautomated)
             console.log("array current month" + countTask)
+            logger.debug("array current month" + countTask)
             taskData.arrforFailedTaskCurrentMOnth = arrforFailedTaskCurrentMOnth;
             taskData.graph_data = graph_data;
             taskData.urlBasedonOption = urlBasedonOption;

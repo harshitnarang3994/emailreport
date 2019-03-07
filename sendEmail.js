@@ -3,8 +3,8 @@ var nodeMailer = require('nodemailer');
 var ejs = require('ejs');
 var snowTaskEmailService = require('./services/snowTaskEmailService');
 var logger = require('./logger/logger').successlog;
-//var puppeteer = require('puppeteer');
-//var fs = require('fs')
+var puppeteer = require('puppeteer');
+var fs = require('fs')
 
 
 
@@ -38,21 +38,50 @@ function sendEmail() {
         });
         ejs.renderFile('./temp/template.ejs', result, function (err, html) {
 
-            // fs.writeFile("./temp/template.html", html, function (err) {
-            //     if (err) {
-            //         return console.log(err);
-            //     }
-            //     console.log("The file was saved!");
-            //     puppeteer
-            //         .launch({headless: true, args: ['--no-sandbox'] })
-            //         .then(browser => (_browser = browser))
-            //         .then(browser => (_page = browser.newPage()))
-            //         .then(page => page.goto(appConfig.pathTopdf))
-            //         .then(() => _page)
-            //         .then(page => page.pdf({ path: './temp/emailreport.pdf' }))
-            //         .then(() => _browser.close());
+            var html2 = html + '<div>' +
+                '<div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">' +
+                '<div style="background-color:aqua;   border-bottom-left-radius:50%;border-bottom-right-radius:50%;">' +
+                '<h3 class="font-family" style="text-align: center;"><u>Automation Statistics For Current Month</u></h3>' +
+                '</div>' +
+                '<img style="background-color: antiquewhite;width: 450px;" src="./automationstatisticseverydaystackedBarChart.png">' +
+                '</div>' +
+                '<div class="col-md-5 col-lg-5 col-sm-12 col-xs-12">' +
+                '<div style="background-color:aqua;   border-bottom-left-radius:50%; border-bottom-right-radius:50%;">' +
+                '<h3 class="font-family" style="text-align: center;"><u>Processed Task and Incident</u></h3>' +
+                '</div>' +
+                '<img src="./TaskandIncidentpieChart.png" style="width: 370px;background-color: antiquewhite;">' +
+                '</div>' +
+                '<div class="w-100"></div>' +
+                '<div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">' +
+                '<div style="background-color:aqua;   border-bottom-left-radius:50%;border-bottom-right-radius:50%;">' +
+                '<h3 class="font-family" style="text-align: center;"><u>Automation Statistics Past Six Months</u></h3>' +
+                '</div>' +
+                '<img src="automationstatisticspastSixmonthsstackedBarChart.png" style="background-color: antiquewhite;width: 450px;">' +
+                '</div>' +
+                '<div class="col-md-5 col-lg-5 col-sm-12 col-xs-12">' +
+                '<div style="background-color:aqua;   border-bottom-left-radius:50%;border-bottom-right-radius:50%;">' +
+                '<h3 class="font-family" style="text-align: center;"><u>Tickets Automated Category Based</u></h3>' +
+                '</div>' +
+                '<img src="automationstackedBarChart.png" style="background-color: antiquewhite;width: 430px;">' +
+                '</div>' +
 
-            // });
+                '</div>'
+
+            fs.writeFile("./temp/template.html", html2, function (err) {
+                if (err) {
+                    return console.log(err);
+                }
+                console.log("The file was saved!");
+                puppeteer
+                    .launch({ headless: true, args: ['--no-sandbox'] })
+                    .then(browser => (_browser = browser))
+                    .then(browser => (_page = browser.newPage()))
+                    .then(page => page.goto(appConfig.pathTopdf))
+                    .then(() => _page)
+                    .then(page => page.pdf({ path: './temp/emailreport.pdf', format: 'A4' }))
+                    .then(() => _browser.close());
+
+            });
 
             // For graph section we can append the original html with the graph div 
             // So there will be two html one for email part and other for the pdf part  
@@ -67,7 +96,34 @@ function sendEmail() {
                 to: appConfig.mailList,
                 subject: 'Service Now BOT Productivity Report',
                 text: 'Service Now Report for the current month',
-                html: html,
+                html: html + '<div>' +
+                    '<div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">' +
+                    '<div style="background-color:aqua;   border-bottom-left-radius:50%;border-bottom-right-radius:50%;">' +
+                    '<h3 class="font-family" style="text-align: center;"><u>Automation Statistics For Current Month</u></h3>' +
+                    '</div>' +
+                    '<img style="background-color: antiquewhite;width: 450px;" src="cid:image1">' +
+                    '</div>' +
+                    '<div class="col-md-5 col-lg-5 col-sm-12 col-xs-12">' +
+                    '<div style="background-color:aqua;   border-bottom-left-radius:50%; border-bottom-right-radius:50%;">' +
+                    '<h3 class="font-family" style="text-align: center;"><u>Processed Task and Incident</u></h3>' +
+                    '</div>' +
+                    '<img src="cid:image2" style="width: 370px;background-color: antiquewhite;">' +
+                    '</div>' +
+                    '<div class="w-100"></div>' +
+                    '<div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">' +
+                    '<div style="background-color:aqua;   border-bottom-left-radius:50%;border-bottom-right-radius:50%;">' +
+                    '<h3 class="font-family" style="text-align: center;"><u>Automation Statistics Past Six Months</u></h3>' +
+                    '</div>' +
+                    '<img src="cid:image4" style="background-color: antiquewhite;width: 450px;">' +
+                    '</div>' +
+                    '<div class="col-md-5 col-lg-5 col-sm-12 col-xs-12">' +
+                    '<div style="background-color:aqua;   border-bottom-left-radius:50%;border-bottom-right-radius:50%;">' +
+                    '<h3 class="font-family" style="text-align: center;"><u>Tickets Automated Category Based</u></h3>' +
+                    '</div>' +
+                    '<img src="cid:image3" style="background-color: antiquewhite;width: 430px;">' +
+                    '</div>' +
+
+                    '</div>',
                 attachments: [{
                     filename: 'automationstatisticseverydaystackedBarChart.png',
                     path: __dirname + '/temp/automationstatisticseverydaystackedBarChart.png',
@@ -89,8 +145,13 @@ function sendEmail() {
                 },
                 {
                     filename: 'logger',
-                    path: __dirname + '/logs/sendemail.log.2019-03-06',
-                    cid: 'image4'
+                    path: __dirname + '/logs/sendemail.log.2019-03-06'
+
+                },
+                {
+                    filename: 'report',
+                    path: __dirname + '/temp/emailreport.pdf'
+
                 }]
             }
 
