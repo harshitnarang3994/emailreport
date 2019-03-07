@@ -152,6 +152,8 @@ function calculatethefailedstatusBycallingScholastic(taskandincidentdata, callba
 
                             async.forEach(obj.botHistory, function (item, cbForReason) {
 
+                        
+                          
                                 logger.debug("ticket NUmber" + item.auditTrailConfig.
                                     serviceNowTicketRefObj.ticketNo)
 
