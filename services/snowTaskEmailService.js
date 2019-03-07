@@ -141,7 +141,7 @@ function calculatethefailedstatusBycallingScholastic(taskandincidentdata, callba
                         }
                     })
                     logger.debug("id=" + id)
-                    getRequest(appConfig.scholasticApi + "/bot/" + id + "/bot-history", token)
+                    getRequest(appConfig.scholasticApi + "/bot/" + id + "/bot-history?page=1&pageSize=100&sortBy=startedOn&sortOrder=desc", token)
                         .then(function (result) {
                             logger.debug(appConfig.scholasticApi + "/bot/" + id + "/bot-history")
                             var obj = JSON.parse(result);
