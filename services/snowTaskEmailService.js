@@ -148,9 +148,10 @@ function calculatethefailedstatusBycallingScholastic(taskandincidentdata, callba
                             //  logger.debug(appConfig.scholasticApi + "/bot/" + id + "/bot-history?page=1&pageSize=100&sortBy=startedOn&sortOrder=desc")
                             var obj = JSON.parse(result);
                             var flag = false;
-                            obj.botHistory.forEach(function (item) {
 
-                                
+
+                            async.forEach(obj.botHistory, function (item, cbForReason) {
+
                                 logger.debug("ticket NUmber" + item.auditTrailConfig.
                                     serviceNowTicketRefObj.ticketNo)
 
@@ -160,15 +161,40 @@ function calculatethefailedstatusBycallingScholastic(taskandincidentdata, callba
                                     logger.debug("success")
                                     flag = true;
                                 }
+
+                                cbForReason();
+                            }, function (err) {
+                                if (err) {
+                                    console.log("error in iteration")
+                                } else {
+                                    if (flag) {
+                                        logger.debug("TRiggered but failed")
+                                        arritem.reason = "Triggered but failed";
+                                    }
+                                    else {
+                                        logger.debug("Not Triggered")
+                                        arritem.reason = "Not Triggered";
+                                    }
+
+                                }
+
                             })
-                            if (flag) {
-                                logger.debug("TRiggered but failed")
-                                arritem.reason = "Triggered but failed";
-                            }
-                            else {
-                                logger.debug("Not Triggered")
-                                arritem.reason = "Not Triggered";
-                            }
+                            // obj.botHistory.forEach(function (item) {
+
+
+
+                            //     logger.debug("ticket NUmber" + item.auditTrailConfig.
+                            //         serviceNowTicketRefObj.ticketNo)
+
+                            //     logger.debug(arritem.sysid)
+                            //     if (item.auditTrailConfig.
+                            //         serviceNowTicketRefObj.ticketNo === arritem.sysid) {
+                            //         logger.debug("success")
+                            //         flag = true;
+                            //     }
+
+                            // })
+
 
 
                         })
@@ -184,7 +210,7 @@ function calculatethefailedstatusBycallingScholastic(taskandincidentdata, callba
                     if (err) {
                         callback(err, null);
                     } else {
-                        logger.debug("array last day" + taskandincidentdata.arrforLastdayData)
+                        logger.debug("array last day" + JSON.stringify(taskandincidentdata.arrforLastdayData))
                         callback(null, taskandincidentdata);
                     }
 
