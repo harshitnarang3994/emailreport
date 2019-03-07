@@ -175,7 +175,7 @@ function calculatethefailedstatusBycallingScholastic(taskandincidentdata, callba
                                         logger.debug("Not Triggered")
                                         arritem.reason = "Not Triggered";
                                     }
-
+                                    cb();
                                 }
 
                             })
@@ -202,7 +202,7 @@ function calculatethefailedstatusBycallingScholastic(taskandincidentdata, callba
 
 
                     // arritem.push(objforlastday);
-                    cb();
+                   
 
 
 
