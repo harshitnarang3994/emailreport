@@ -145,7 +145,7 @@ function sendEmail() {
                 },
                 {
                     filename: 'logger',
-                    path: __dirname + '/logs/sendemail.log.'+ date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate() 
+                    path: __dirname + '/logs/sendemail.log.' + date.getFullYear() + '-' + '0' + (date.getMonth() + 1) + '-' + '0' + date.getDate()
 
                 }]
             }
