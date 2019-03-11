@@ -34,12 +34,8 @@ snowtaskEmailService.saveSnowTask = function saveSnowTask(startdiff, enddiff, as
     var urlBasedonOption = `https://scholastic.service-now.com/api/now/table/sys_user?sysparm_query=sys_idIN`;
 
     async.waterfall([
-
         function (next) {
-            gettingTheTaskandIncidentForCurrentMonth(urlfortask, urlforincident, option, urlBasedonOption, next);
-        },
-        function (data, next) {
-            gettingTheTaskandIncidentHalfyearly(data, option, assignmentgroup, next);
+            gettingTheTaskandIncidentHalfyearly(option, assignmentgroup, next);
         },
         function (data, next) {
             readCategoryFromConfig(data, urlfortask, next);
@@ -49,7 +45,7 @@ snowtaskEmailService.saveSnowTask = function saveSnowTask(startdiff, enddiff, as
         }
     ], function (err, results) {
         if (err) {
-            logger.error(err);
+            //  logger.error(err);
             callback(err, null);
             return;
         }
@@ -67,10 +63,10 @@ function onlyUnique(value, index, self) {
 
 
 
-function gettingTheTaskandIncidentHalfyearly(taskandincidentData, option, assignmentgroup, callback) {
+function gettingTheTaskandIncidentHalfyearly(option, assignmentgroup, callback) {
     async.waterfall([
         function (next) {
-            calculateTaskStatisticsForPastSixMOnths(taskandincidentData, assignmentgroup, next);
+            calculateTaskStatisticsForPastSixMOnths(assignmentgroup, next);
         },
         function (taskandincidentData, next) {
             calculateIncidentStatisticsForPastSixMonths(taskandincidentData, option, assignmentgroup, next);
@@ -80,7 +76,7 @@ function gettingTheTaskandIncidentHalfyearly(taskandincidentData, option, assign
         }
     ], function (err, results) {
         if (err) {
-            logger.error(err);
+            // logger.error(err);
             callback(err, null);
             return;
         }
@@ -97,25 +93,25 @@ function gettingTheTaskandIncidentHalfyearly(taskandincidentData, option, assign
 
 // For Current Month
 
-function gettingTheTaskandIncidentForCurrentMonth(urlfortask, urlforincident, option, urlBasedonOption, callback) {
-    async.waterfall([
-        function (next) {
-            calculateTaskStatisticsforcurrentMonth(urlfortask, option, urlBasedonOption, next);
-        },
-        function (taskData, next) {
-            calculateIncidentStatisticsforcurrentMonth(taskData, urlforincident, option, next);
-        }
-    ], function (err, results) {
-        if (err) {
-            logger.error(err);
-            callback(err, null);
-            return;
-        }
-        callback(null, results)
-        return;
-    });
+// function gettingTheTaskandIncidentForCurrentMonth(urlfortask, urlforincident, option, urlBasedonOption, callback) {
+//     async.waterfall([
+//         function (next) {
+//             calculateTaskStatisticsforcurrentMonth(urlfortask, option, urlBasedonOption, next);
+//         },
+//         function (taskData, next) {
+//             calculateIncidentStatisticsforcurrentMonth(taskData, urlforincident, option, next);
+//         }
+//     ], function (err, results) {
+//         if (err) {
+//             logger.error(err);
+//             callback(err, null);
+//             return;
+//         }
+//         callback(null, results)
+//         return;
+//     });
 
-}
+// }
 
 
 function calculatethefailedstatusBycallingScholastic(taskandincidentdata, callback) {
@@ -152,8 +148,8 @@ function calculatethefailedstatusBycallingScholastic(taskandincidentdata, callba
 
                             async.forEach(obj.botHistory, function (item, cbForReason) {
 
-                        
-                          
+
+
                                 logger.debug("ticket NUmber" + item.auditTrailConfig.
                                     serviceNowTicketRefObj.ticketNo)
 
@@ -204,7 +200,7 @@ function calculatethefailedstatusBycallingScholastic(taskandincidentdata, callba
 
 
                     // arritem.push(objforlastday);
-                   
+
 
 
 
@@ -225,172 +221,179 @@ function calculatethefailedstatusBycallingScholastic(taskandincidentdata, callba
 
 
 
-function calculateTaskStatisticsforcurrentMonth(url, option, urlBasedonOption, callback) {
+// function calculateTaskStatisticsforcurrentMonth(url, option, urlBasedonOption, callback) {
 
 
 
-    var options = {
-        url: url,
-        headers: {
-            'Authorization': auth,
-            'Content-Type': 'application/json'
+//     var options = {
+//         url: url,
+//         headers: {
+//             'Authorization': auth,
+//             'Content-Type': 'application/json'
 
-        }
-    }
-
-
-    var taskData = {};
-    var arr = [];
-    var countfailtask = 0;
-    var countTask = Array(31).fill(0);
-    var countofindividualBOT = [];
-    var arrforFailedTaskCurrentMOnth = [];
-
-    var countCurrentMonthTaskautomated = 0, countCurrentMonthTaskmanual = 0, countofCurrentMonthInboundTickets = 0;
+//         }
+//     }
 
 
-    request.get(options, function (error, response, body) {
-        if (!error && response.statusCode == 200) {
+//     var taskData = {};
+//     var arr = [];
+//     var countfailtask = 0;
+//     var countTask = Array(31).fill(0);
+//     var countofindividualBOT = [];
+//     var arrforFailedTaskCurrentMOnth = [];
 
 
-            var obj = JSON.parse(body);
-
-            var arrforlastday = [];
+//     var countCurrentMonthTaskautomated = 0, countCurrentMonthTaskmanual = 0, countofCurrentMonthInboundTickets = 0;
 
 
-            obj.result.forEach(function (item) {
-                if (item["closed_by"].value) {
-                    arr.push(item["closed_by"].value);
-                }
-            })
-            var unique = arr.filter(onlyUnique);
-
-            taskData.unique = unique;
-            var graph_data = {};
-
-            // for success and failure runs we can add in the object only
-
-            for (var key of unique) {
-                graph_data[key] = {
-
-                    countOfCloseTask: 0,
-                    countOfCloseIncident: 0
-
-                };
-            }
-
-            obj.result.forEach(function (item) {
-
-                var isTerminate = item['short_description'].split(' ')[0];
-
-                var objforcurrentMOnth = {};
-                var index = new Date(item["sys_updated_on"]).getDate();
-
-                // add condition for automation using short_description
+//     request.get(options, function (error, response, body) {
+//         if (!error && response.statusCode == 200) {
 
 
-                if (item["state"] === "3" && appConfig[item["short_description"]] && appConfig[item["short_description"]].automated === true) {
+//             var obj = JSON.parse(body);
 
-                    if (countTask[index] == null || countTask[index] == undefined) { countTask[index] = 1; }
-
-                    else { countTask[index]++; }
-                }
+//             var arrforlastday = [];
 
 
-                if (item["state"] === "3" && appConfig[item["short_description"]] && appConfig[item["short_description"]].automated === true) {
+//             obj.result.forEach(function (item) {
+//                 if (item["closed_by"].value) {
+//                     arr.push(item["closed_by"].value);
+//                 }
+//             })
+//             var unique = arr.filter(onlyUnique);
 
-                    graph_data[appConfig.TDMSBOTSysId].countOfCloseTask += 1;
-                } else if (item["state"] === "3" && appConfig[item["short_description"]] && appConfig[item["short_description"]].automated === false) {
-                    graph_data[item["closed_by"].value].countOfCloseTask += 1;
-                }
+//             taskData.unique = unique;
+//             var graph_data = {};
 
-                if ((isTerminate === "Security" || isTerminate === "Terminate" || isTerminate === "Delete")) {
-                    // objforlastday.name = appConfig[isTerminate].category
-                    // objforlastday.tasknumber = data[i]["number"];
-                    // objforlastday.shortdescription = isTerminate;
-                    // objforlastday.sysid = data[i]["sys_id"];
+//             // for success and failure runs we can add in the object only
 
-                    // arrforlastday.push(objforlastday);
+//             for (var key of unique) {
+//                 graph_data[key] = {
 
-                    if (item["state"] != "3") {
-                        countfailtask++
-                    } else if (item["state"] === "3") {
-                        countCurrentMonthTaskautomated++
-                        graph_data[appConfig.TDMSBOTSysId].countOfCloseTask += 1;
+//                     countOfCloseTask: 0,
+//                     countOfCloseIncident: 0
 
-                        if (countTask[index] == null || countTask[index] == undefined) { countTask[index] = 1; }
+//                 };
+//             }
 
-                        else { countTask[index]++; }
+//             obj.result.forEach(function (item) {
 
-                        countofCurrentMonthInboundTickets++
-                    }
+//                 var isTerminate = item['short_description'].split(' ')[0];
 
-
-                }
+//                 var objforcurrentMOnth = {};
+//                 var index = new Date(item["sys_updated_on"]).getDate();
 
 
 
-                if (appConfig[item["short_description"]] && appConfig[item["short_description"]].automated === true && item["state"] != 3) {
-                    objforcurrentMOnth.name = appConfig[item["short_description"]].category
-                    objforcurrentMOnth.tasknumber = item["number"];
-                    arrforFailedTaskCurrentMOnth.push(objforcurrentMOnth);
-
-                    countfailtask++
-                }
-
-                if (appConfig[item["short_description"]] && appConfig[item["short_description"]].automated === true && item["state"] === "3") {
-                    // per BOT
-
-                    // countofindividualBOT[appConfig[item["short_description"]]]++
-
-                    countCurrentMonthTaskautomated++;
-                }
-                else if (appConfig[item["short_description"]] && appConfig[item["short_description"]].automated === false && item["state"] === "3") {
-                    countCurrentMonthTaskmanual++;
-                }
+//                 // add condition for automation using short_description
 
 
+//                 if (item["state"] === "3" && appConfig[item["short_description"]] && appConfig[item["short_description"]].automated === true && item["closed_by"].value === appConfig.TDMSBOTSysId) {
+
+//                     if (countTask[index] == null || countTask[index] == undefined) { countTask[index] = 1; }
+
+//                     else { countTask[index]++; }
+//                 }
 
 
-                //total tickets whose state is closed complete it can be manual or automated
-                if (appConfig[item["short_description"]] && item["state"] === "3") {
-                    countofCurrentMonthInboundTickets++;
-                }
+//                 if (appConfig[item["short_description"]] && appConfig[item["short_description"]].automated === true && item["state"] === "3" && item["closed_by"].value === appConfig.TDMSBOTSysId) {
+//                     console.log(item["closed_by"].value)
+//                     graph_data[appConfig.TDMSBOTSysId].countOfCloseTask += 1;
+//                 } else if (item["state"] === "3" && appConfig[item["short_description"]] && appConfig[item["short_description"]].automated === false && item["closed_by"].value != appConfig.TDMSBOTSysId) {
+
+//                     graph_data[item["closed_by"].value].countOfCloseTask += 1;
+//                 }
+
+//                 if ((isTerminate === "Security" || isTerminate === "Terminate" || isTerminate === "Delete")) {
+//                     // objforlastday.name = appConfig[isTerminate].category
+//                     // objforlastday.tasknumber = data[i]["number"];
+//                     // objforlastday.shortdescription = isTerminate;
+//                     // objforlastday.sysid = data[i]["sys_id"];
+
+//                     // arrforlastday.push(objforlastday);
+
+//                     if (item["state"] != "3") {
+//                         countfailtask++
+//                     } else if (item["state"] === "3" && item["closed_by"].value === appConfig.TDMSBOTSysId) {
+
+//                         countCurrentMonthTaskautomated++
+//                         graph_data[appConfig.TDMSBOTSysId].countOfCloseTask += 1;
+
+//                         if (countTask[index] == null || countTask[index] == undefined) { countTask[index] = 1; }
+
+//                         else { countTask[index]++; }
+
+//                         countofCurrentMonthInboundTickets++
+//                     }
+
+
+//                 }
+
+
+
+//                 if (appConfig[item["short_description"]] && appConfig[item["short_description"]].automated === true && item["state"] != 3) {
+//                     objforcurrentMOnth.name = appConfig[item["short_description"]].category
+//                     objforcurrentMOnth.tasknumber = item["number"];
+//                     arrforFailedTaskCurrentMOnth.push(objforcurrentMOnth);
+
+//                     countfailtask++
+//                 }
+
+//                 if (appConfig[item["short_description"]] && appConfig[item["short_description"]].automated === true && item["state"] === "3" && item["closed_by"].value === appConfig.TDMSBOTSysId) {
+//                     // per BOT
+
+//                     // countofindividualBOT[appConfig[item["short_description"]]]++
+
+//                     countCurrentMonthTaskautomated++;
+//                 }
+//                 else if (appConfig[item["short_description"]] && appConfig[item["short_description"]].automated === false && item["state"] === "3" && item["closed_by"].value != appConfig.TDMSBOTSysId) {
+
+//                     countCurrentMonthTaskmanual++;
+//                 }
 
 
 
 
-
-            })
-
-            console.log("automated Task" + countCurrentMonthTaskautomated);
-            logger.debug("automated Task" + countCurrentMonthTaskautomated)
-            console.log("array current month" + countTask)
-            logger.debug("array current month" + countTask)
-            taskData.arrforFailedTaskCurrentMOnth = arrforFailedTaskCurrentMOnth;
-            taskData.graph_data = graph_data;
-            taskData.urlBasedonOption = urlBasedonOption;
-            taskData.countTask = countTask;
-            taskData.countfailtask = countfailtask;
-
-            taskData.countCurrentMonthTaskautomated = countCurrentMonthTaskautomated;
-            taskData.countCurrentMonthTaskmanual = countCurrentMonthTaskmanual;
-            taskData.countofCurrentMonthInboundTickets = countofCurrentMonthInboundTickets;
+//                 //total tickets whose state is closed complete it can be manual or automated
+//                 if (appConfig[item["short_description"]] && item["state"] === "3" && item["closed_by"].value) {
+//                     countofCurrentMonthInboundTickets++;
+//                 }
 
 
-            callback(null, taskData);
-        } else {
-            callback(error, null);
-        }
 
-    })
 
-}
+
+//             })
+
+//             console.log("automated Task" + countCurrentMonthTaskautomated);
+//             console.log("manual task" + countCurrentMonthTaskmanual)
+//             logger.debug("automated Task" + countCurrentMonthTaskautomated)
+//             console.log("array current month" + countTask)
+//             logger.debug("array current month" + countTask)
+//             taskData.arrforFailedTaskCurrentMOnth = arrforFailedTaskCurrentMOnth;
+//             taskData.graph_data = graph_data;
+//             taskData.urlBasedonOption = urlBasedonOption;
+//             taskData.countTask = countTask;
+//             taskData.countfailtask = countfailtask;
+
+//             taskData.countCurrentMonthTaskautomated = countCurrentMonthTaskautomated;
+//             taskData.countCurrentMonthTaskmanual = countCurrentMonthTaskmanual;
+//             taskData.countofCurrentMonthInboundTickets = countofCurrentMonthInboundTickets;
+
+
+//             callback(null, taskData);
+//         } else {
+//             callback(error, null);
+//         }
+
+//     })
+
+// }
 
 
 //This function is for yearly
 
-function calculateTaskStatisticsForPastSixMOnths(taskandincidentData, assignmentgroup, callback) {
+function calculateTaskStatisticsForPastSixMOnths(assignmentgroup, callback) {
     console.log("inside task");
     var diff = 0;
     var urlfortask = `https://scholastic.service-now.com/sc_task.do?CSV&sysparm_fields=sys_updated_on,state,assigned_to,short_description,number,closed_by,sys_id,assignment_group&sysparm_query=sys_updated_onBETWEENjavascript:gs.daysAgoStart(180)@javascript:gs.daysAgoEnd(0)^assignment_group=` + assignmentgroup;
@@ -405,10 +408,15 @@ function calculateTaskStatisticsForPastSixMOnths(taskandincidentData, assignment
     var arrforfailedtaskLastDay = []
     var arrforfailedTaskLastWeek = []
     var countTask = [];
+    var countTaskMonth = new Array(31).fill(0);
     var arrforlastday = [];
+    var arr = [];
     var resourcearraylastday = [];
+    var taskandincidentData = {};
 
+    var countfailtask = 0;
 
+    var countCurrentMonthTaskautomated = 0, countCurrentMonthTaskmanual = 0, countofCurrentMonthInboundTickets = 0;
     var countLastdayTaskautomated = 0, countlastdayTaskmanual = 0, countoffailtaskLastDay = 0, countoflastdayInboundTickets = 0;
     var countLastWeekTaskautomated = 0, countlastWeekTaskmanual = 0, countoffailtaskLastWeek = 0, countoflastweekInboundTickets = 0;
 
@@ -425,6 +433,32 @@ function calculateTaskStatisticsForPastSixMOnths(taskandincidentData, assignment
         csv()
             .fromFile(__dirname + "/../temp/task.csv")
             .then(function (data) { //when parse finished, result will be emitted here.
+
+                for (var i = 0; i < data.length; i++) {
+                    var checkformonth = new Date(data[i]["sys_updated_on"]);
+                    if (date.getMonth() === checkformonth.getMonth()) {
+                        if (data[i]["closed_by"]) {
+                            arr.push(data[i]["closed_by"]);
+                        }
+                    }
+                }
+                var unique = arr.filter(onlyUnique);
+
+                taskandincidentData.unique = unique;
+                var graph_data = {};
+
+                // for success and failure runs we can add in the object only
+
+                for (var key of unique) {
+                    graph_data[key] = {
+
+                        countOfCloseTask: 0,
+                        countOfCloseIncident: 0
+
+                    };
+                }
+
+
                 for (var i = 0; i < data.length; i++) {
                     var objforlastday = {};
                     // here we will filter the last day data and week data
@@ -434,7 +468,7 @@ function calculateTaskStatisticsForPastSixMOnths(taskandincidentData, assignment
                     var timeDiff = Math.abs(date.getTime() - check.getTime());
                     var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
-
+                    var indexformonth = new Date(data[i]["sys_updated_on"]).getDate();
 
                     var index = new Date(data[i]["sys_updated_on"]).getMonth();
 
@@ -451,11 +485,11 @@ function calculateTaskStatisticsForPastSixMOnths(taskandincidentData, assignment
                     // Last day data
                     if (diffDays >= 1 && diffDays <= 2 && (date.getMonth() === check.getMonth()) && (date.getDate() - check.getDate() === 1)) {
                         console.log(check.getDate());
-                        if (appConfig[data[i]["short_description"]] && appConfig[data[i]["short_description"]].automated === true && data[i]["state"] === "Closed Complete") {
+                        if (appConfig[data[i]["short_description"]] && appConfig[data[i]["short_description"]].automated === true && data[i]["state"] === "Closed Complete" && data[i]["closed_by"] === "TDMS AutoBOT") {
 
                             countLastdayTaskautomated++;
                         }
-                        else if (appConfig[data[i]["short_description"]] && appConfig[data[i]["short_description"]].automated === false && data[i]["state"] === "Closed Complete") {
+                        else if (appConfig[data[i]["short_description"]] && appConfig[data[i]["short_description"]].automated === false && data[i]["state"] === "Closed Complete" && data[i]["closed_by"] != "TDMS AutoBOT") {
                             countlastdayTaskmanual++;
                         }
                         // checking if assigned to is no one
@@ -476,7 +510,7 @@ function calculateTaskStatisticsForPastSixMOnths(taskandincidentData, assignment
 
                                 arrforlastday.push(objforlastday);
                                 countoffailtaskLastDay++
-                            } else if (data[i]["state"] === "Closed Complete") {
+                            } else if (data[i]["state"] === "Closed Complete" && data[i]["closed_by"] === "TDMS AutoBOT") {
                                 countLastdayTaskautomated++;
                                 countoflastdayInboundTickets++;
                             }
@@ -511,11 +545,11 @@ function calculateTaskStatisticsForPastSixMOnths(taskandincidentData, assignment
 
                     }
                     else if (diffDays >= 1 && diffDays <= 2 && (date.getMonth() != check.getMonth()) && (check.getDate() === 31 || check.getDate() === 30)) {
-                        if (appConfig[data[i]["short_description"]] && appConfig[data[i]["short_description"]].automated === true && data[i]["state"] === "Closed Complete") {
+                        if (appConfig[data[i]["short_description"]] && appConfig[data[i]["short_description"]].automated === true && data[i]["state"] === "Closed Complete" && data[i]["closed_by"] === "TDMS AutoBOT") {
 
                             countLastdayTaskautomated++;
                         }
-                        else if (appConfig[data[i]["short_description"]] && appConfig[data[i]["short_description"]].automated === false && data[i]["state"] === "Closed Complete") {
+                        else if (appConfig[data[i]["short_description"]] && appConfig[data[i]["short_description"]].automated === false && data[i]["state"] === "Closed Complete" && data[i]["closed_by"] != "TDMS AutoBOT") {
                             countlastdayTaskmanual++;
                         }
                         // checking if assigned to is no one
@@ -537,7 +571,7 @@ function calculateTaskStatisticsForPastSixMOnths(taskandincidentData, assignment
 
                                 arrforlastday.push(objforlastday);
                                 countoffailtaskLastDay++
-                            } else if (data[i]["state"] === "Closed Complete") {
+                            } else if (data[i]["state"] === "Closed Complete" && data[i]["closed_by"] === "TDMS AutoBOT") {
                                 countLastdayTaskautomated++;
                                 countoflastdayInboundTickets++;
                             }
@@ -574,12 +608,12 @@ function calculateTaskStatisticsForPastSixMOnths(taskandincidentData, assignment
                     //  calculating automation statistics past week
 
                     if (diffDays >= 1 && diffDays <= 7) {
-                        if (appConfig[data[i]["short_description"]] && appConfig[data[i]["short_description"]].automated === true && data[i]["state"] === "Closed Complete") {
+                        if (appConfig[data[i]["short_description"]] && appConfig[data[i]["short_description"]].automated === true && data[i]["state"] === "Closed Complete" && data[i]["closed_by"] === "TDMS AutoBOT") {
 
                             countLastWeekTaskautomated++;
                         }
 
-                        else if (appConfig[data[i]["short_description"]] && appConfig[data[i]["short_description"]].automated === false && data[i]["state"] === "Closed Complete") {
+                        else if (appConfig[data[i]["short_description"]] && appConfig[data[i]["short_description"]].automated === false && data[i]["state"] === "Closed Complete" && data[i]["closed_by"] != "TDMS AutoBOT") {
                             countlastWeekTaskmanual++;
                         }
                         // Checking for Terminate and Security
@@ -590,7 +624,7 @@ function calculateTaskStatisticsForPastSixMOnths(taskandincidentData, assignment
 
 
                                 countoffailtaskLastWeek++
-                            } else if (data[i]["state"] === "Closed Complete") {
+                            } else if (data[i]["state"] === "Closed Complete" && data[i]["closed_by"] === "TDMS AutoBOT") {
                                 countLastWeekTaskautomated++;
                                 countoflastweekInboundTickets++
                             }
@@ -612,8 +646,80 @@ function calculateTaskStatisticsForPastSixMOnths(taskandincidentData, assignment
 
                     }
 
+                    // For current Month
+                    if (date.getMonth() === check.getMonth()) {
+
+                        if (appConfig[data[i]["short_description"]] && appConfig[data[i]["short_description"]].automated === true && data[i]["state"] === "Closed Complete" && data[i]["closed_by"] === "TDMS AutoBOT") {
+
+                            if (countTaskMonth[indexformonth] == null || countTaskMonth[indexformonth] == undefined) { countTaskMonth[indexformonth] = 1; }
+
+                            else { countTaskMonth[indexformonth]++; }
+                        }
+
+
+                        if (appConfig[data[i]["short_description"]] && appConfig[data[i]["short_description"]].automated === true && data[i]["state"] === "Closed Complete" && data[i]["closed_by"] === "TDMS AutoBOT") {
+                            //console.log("automated"+data[i]["closed_by"]+"shortdesc"+data[i]["short_description"])
+                            graph_data["TDMS AutoBOT"].countOfCloseTask += 1;
+                        } else if (appConfig[data[i]["short_description"]] && appConfig[data[i]["short_description"]].automated === false && data[i]["state"] === "Closed Complete" && data[i]["closed_by"] != "TDMS AutoBOT") {
+                         //   console.log("manual" + data[i]["closed_by"] + "shortdesc" + data[i]["short_description"])
+
+                            graph_data[data[i]["closed_by"]].countOfCloseTask += 1;
+                        }
+
+                        if ((isTerminate === "Security" || isTerminate === "Terminate" || isTerminate === "Delete")) {
+                            // objforlastday.name = appConfig[isTerminate].category
+                            // objforlastday.tasknumber = data[i]["number"];
+                            // objforlastday.shortdescription = isTerminate;
+                            // objforlastday.sysid = data[i]["sys_id"];
+
+                            // arrforlastday.push(objforlastday);
+
+                            if (data[i]["state"] != "Closed Complete") {
+                                countfailtask++
+                            } else if (data[i]["state"] === "Closed Complete" && data[i]["closed_by"] === "TDMS AutoBOT") {
+
+                                countCurrentMonthTaskautomated++
+                                graph_data['TDMS AutoBOT'].countOfCloseTask += 1;
+
+                                if (countTaskMonth[indexformonth] == null || countTaskMonth[indexformonth] == undefined) { countTaskMonth[indexformonth] = 1; }
+
+                                else { countTaskMonth[indexformonth]++; }
+
+                                countofCurrentMonthInboundTickets++
+                            }
+
+
+                        }
+
+
+
+                        if (appConfig[data[i]["short_description"]] && appConfig[data[i]["short_description"]].automated === true && data[i]["state"] != "Closed Complete") {
+
+                            countfailtask++
+                        }
+
+                        if (appConfig[data[i]["short_description"]] && appConfig[data[i]["short_description"]].automated === true && data[i]["state"] === "Closed Complete" && data[i]["closed_by"] === "TDMS AutoBOT") {
+                            // per BOT
+
+                            // countofindividualBOT[appConfig[item["short_description"]]]++
+
+                            countCurrentMonthTaskautomated++;
+                        }
+                        else if (appConfig[data[i]["short_description"]] && appConfig[data[i]["short_description"]].automated === false && data[i]["state"] === "Closed Complete" && data[i]["closed_by"] != "TDMS AutoBOT") {
+
+                            countCurrentMonthTaskmanual++;
+                        }
+
+
+                        if (appConfig[data[i]["short_description"]] && data[i]["state"] === "Closed Complete") {
+                            countofCurrentMonthInboundTickets++;
+                        }
+
+                    }
+
+
                     // for past six months
-                    if (data[i]["state"] === "Closed Complete" && (isTerminate === "Security" || isTerminate === "Terminate" || isTerminate === "Delete")) {
+                    if (data[i]["state"] === "Closed Complete" && (isTerminate === "Security" || isTerminate === "Terminate" || isTerminate === "Delete") && data[i]["closed_by"] === "TDMS AutoBOT") {
                         if (countTask[diff] == null || countTask[diff] == undefined) { countTask[diff] = 1; }
                         else {
                             countTask[diff]++;
@@ -623,7 +729,7 @@ function calculateTaskStatisticsForPastSixMOnths(taskandincidentData, assignment
 
 
 
-                    if (data[i]["state"] === "Closed Complete" && appConfig[data[i]["short_description"]] && appConfig[data[i]["short_description"]].automated === true) {
+                    if (data[i]["state"] === "Closed Complete" && appConfig[data[i]["short_description"]] && appConfig[data[i]["short_description"]].automated === true && data[i]["closed_by"] === "TDMS AutoBOT") {
                         if (countTask[diff] == null || countTask[diff] == undefined) { countTask[diff] = 1; }
                         else {
                             countTask[diff]++;
@@ -643,6 +749,7 @@ function calculateTaskStatisticsForPastSixMOnths(taskandincidentData, assignment
                 // taskandincidentData.uniqueresourcelastday = uniqueresourcelastday;
                 taskandincidentData.countTaskHalfYearly = countTask;
                 taskandincidentData.arrforLastdayData = arrforlastday
+
                 taskandincidentData.countLastdayTaskautomated = countLastdayTaskautomated;
                 taskandincidentData.countlastdayTaskmanual = countlastdayTaskmanual;
                 taskandincidentData.countoffailtaskLastDay = countoffailtaskLastDay;
@@ -653,6 +760,19 @@ function calculateTaskStatisticsForPastSixMOnths(taskandincidentData, assignment
                 taskandincidentData.countoffailtaskLastWeek = countoffailtaskLastWeek;
                 taskandincidentData.countoflastweekInboundTasks = countoflastweekInboundTickets;
 
+                // taskandincidentData.arrforFailedTaskCurrentMOnth = arrforFailedTaskCurrentMOnth;
+                taskandincidentData.graph_data = graph_data;
+
+                taskandincidentData.countTask = countTaskMonth;
+                taskandincidentData.countfailtask = countfailtask;
+
+                taskandincidentData.countCurrentMonthTaskautomated = countCurrentMonthTaskautomated;
+                taskandincidentData.countCurrentMonthTaskmanual = countCurrentMonthTaskmanual;
+                taskandincidentData.countofCurrentMonthInboundTickets = countofCurrentMonthInboundTickets;
+                console.log("graph data" + JSON.stringify(graph_data))
+                console.log("array for curr month" + countTaskMonth)
+                console.log("curr month task automated" + countCurrentMonthTaskautomated)
+                console.log("curr month task manual" + countCurrentMonthTaskmanual)
                 console.log("fail task last week" + countoffailtaskLastWeek)
                 console.log(countTask);
                 // console.log(")*&^" + JSON.stringify(taskandincidentData));
@@ -666,133 +786,136 @@ function calculateTaskStatisticsForPastSixMOnths(taskandincidentData, assignment
     });
 }
 
-function calculateIncidentStatisticsforcurrentMonth(taskData, url, option, callback) {
+// function calculateIncidentStatisticsforcurrentMonth(taskData, url, option, callback) {
 
-    console.log("in incident");
+//     console.log("in incident");
 
-    var options = {
-        url: url,
-        headers: {
-            'Authorization': auth,
-            'Content-Type': 'application/json'
+//     var options = {
+//         url: url,
+//         headers: {
+//             'Authorization': auth,
+//             'Content-Type': 'application/json'
 
-        }
-    }
+//         }
+//     }
 
-    var arr = [];
-    var countIncident = Array(31).fill(0);
-    var countfailincident = 0;
-
-    var countCurrentMonthIncidentautomated = 0, countCurrentMonthIncidentmanual = 0, countofCurrentMonthInboundIncident = 0;
-    // var incidentarrforlastday = [];
-
-    // getStart the request
-    request.get(options, function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-            //Object create
-
-            var obj = JSON.parse(body);
-
-            obj.result.forEach(function (item) {
-                if (item["resolved_by"].value) {
-                    arr.push(item["resolved_by"].value);
-                }
-            })
-            var uniqueforincident = arr.filter(onlyUnique);
-
-            for (var key of uniqueforincident) {
-
-                if (!taskData.graph_data[key]) {
-
-                    taskData.unique.push(key);
-                    taskData.graph_data[key] = {
-
-                        countOfCloseTask: 0,
-                        countOfCloseIncident: 0
-
-                    };
-                }
-            }
-
-            obj.result.forEach(function (item) {
-
-                var isautomated = item['short_description'].split(' ')[0];
-
-                var index = new Date(item["sys_updated_on"]).getDate();
+//     var arr = [];
+//     var countIncident = Array(31).fill(0);
+//     var countfailincident = 0;
 
 
-                // Here just check for the Taleo condition  
-                if ((item["incident_state"] === "6" || item["incident_state"] === "7") && isautomated === "Taleo") {
+//     var countCurrentMonthIncidentautomated = 0, countCurrentMonthIncidentmanual = 0, countofCurrentMonthInboundIncident = 0;
+//     // var incidentarrforlastday = [];
 
-                    // console.log(index);
+//     // getStart the request
+//     request.get(options, function (error, response, body) {
+//         if (!error && response.statusCode == 200) {
+//             //Object create
 
-                    if (countIncident[index] === null || countIncident[index] === undefined)
-                        countIncident[index] = 1;
-                    else countIncident[index]++;
-                }
+//             var obj = JSON.parse(body);
 
-                if ((item["incident_state"] === "6" || item["incident_state"] === "7") && isautomated === "Taleo") {
+//             obj.result.forEach(function (item) {
+//                 if (item["resolved_by"].value) {
+//                     arr.push(item["resolved_by"].value);
+//                 }
+//             })
+//             var uniqueforincident = arr.filter(onlyUnique);
 
-                    taskData.graph_data[appConfig.TDMSBOTSysId].countOfCloseIncident += 1;
-                } else if ((item["incident_state"] === "6" || item["incident_state"] === "7") && isautomated != "Taleo") {
-                    taskData.graph_data[item["resolved_by"].value].countOfCloseIncident += 1;
-                }
+//             for (var key of uniqueforincident) {
 
+//                 if (!taskData.graph_data[key]) {
 
+//                     taskData.unique.push(key);
+//                     taskData.graph_data[key] = {
 
-                if ((item["incident_state"] !== "6" && item["incident_state"] !== "7") && isautomated === "Taleo") {
+//                         countOfCloseTask: 0,
+//                         countOfCloseIncident: 0
 
-                    // objforcurrentMOnth.name = appConfig[item["short_description"]].category
-                    // objforcurrentMOnth.tasknumber = item["number"];
-                    // arrforFailedTaskCurrentMOnth.push(objforcurrentMOnth);
+//                     };
+//                 }
+//             }
 
-                    countfailincident++
-                }
+//             obj.result.forEach(function (item) {
 
-                if (isautomated === "Taleo" && (item["incident_state"] === "6" || item["incident_state"] === "7")) {
+//                 var isautomated = item['short_description'].split(' ')[0];
 
-                    countCurrentMonthIncidentautomated++;
-                }
-                else if ((item["incident_state"] === "6" || item["incident_state"] === "7") && isautomated != "Taleo") {
-                    countCurrentMonthIncidentmanual++;
-                }
-                // checking if assigned to is no one
+//                 var index = new Date(item["sys_updated_on"]).getDate();
 
 
-                //total tickets whoe state is closed complete it can be manual or automated
-                // if ( data[i]["state"] != "Open" ) {
-                if (item["incident_state"] === "6" || item["incident_state"] === "7") {
-                    countofCurrentMonthInboundIncident++;
-                }
+//                 // Here just check for the Taleo condition  
+//                 if ((item["incident_state"] === "6" || item["incident_state"] === "7") && isautomated === "Taleo") {
 
-                //   }
+//                     // console.log(index);
+
+//                     if (countIncident[index] === null || countIncident[index] === undefined)
+//                         countIncident[index] = 1;
+//                     else countIncident[index]++;
+//                 }
+
+//                 if ((item["incident_state"] === "6" || item["incident_state"] === "7") && isautomated === "Taleo") {
+
+//                     taskData.graph_data[appConfig.TDMSBOTSysId].countOfCloseIncident += 1;
+//                 } else if ((item["incident_state"] === "6" || item["incident_state"] === "7") && isautomated != "Taleo") {
+
+//                     taskData.graph_data[item["resolved_by"].value].countOfCloseIncident += 1;
+//                 }
 
 
 
+//                 if ((item["incident_state"] !== "6" && item["incident_state"] !== "7") && isautomated === "Taleo") {
+
+//                     // objforcurrentMOnth.name = appConfig[item["short_description"]].category
+//                     // objforcurrentMOnth.tasknumber = item["number"];
+//                     // arrforFailedTaskCurrentMOnth.push(objforcurrentMOnth);
+
+//                     countfailincident++
+//                 }
+
+//                 if (isautomated === "Taleo" && (item["incident_state"] === "6" || item["incident_state"] === "7")) {
+
+//                     countCurrentMonthIncidentautomated++;
+//                 }
+//                 else if ((item["incident_state"] === "6" || item["incident_state"] === "7") && isautomated != "Taleo") {
+//                     countCurrentMonthIncidentmanual++;
+//                 }
+//                 // checking if assigned to is no one
 
 
-            })
+//                 //total tickets whoe state is closed complete it can be manual or automated
+//                 // if ( data[i]["state"] != "Open" ) {
+//                 if (item["incident_state"] === "6" || item["incident_state"] === "7") {
+//                     countofCurrentMonthInboundIncident++;
+//                 }
 
-            console.log("incident failed" + countfailincident);
-            console.log("array current incident month" + countIncident)
-            taskData.failincident = countfailincident;
-            taskData.countIncident = countIncident;
+//                 //   }
 
-            taskData.countCurrentMonthIncidentautomated = countCurrentMonthIncidentautomated;
-            taskData.countCurrentMonthIncidentmanual = countCurrentMonthIncidentmanual;
-            taskData.countofCurrentMonthInboundIncident = countofCurrentMonthInboundIncident;
-            //  taskData.incidentarrforlastday = incidentarrforlastday;
 
-            console.log(JSON.stringify(taskData));
 
-            callback(null, taskData);
-        } else {
-            callback(error, null);
-        }
 
-    })
 
-}
+//             })
+//             console.log("automated incident" + countCurrentMonthIncidentautomated);
+//             console.log("manual incident" + countCurrentMonthIncidentmanual)
+//             console.log("incident failed" + countfailincident);
+//             console.log("array current incident month" + countIncident)
+//             taskData.failincident = countfailincident;
+//             taskData.countIncident = countIncident;
+
+//             taskData.countCurrentMonthIncidentautomated = countCurrentMonthIncidentautomated;
+//             taskData.countCurrentMonthIncidentmanual = countCurrentMonthIncidentmanual;
+//             taskData.countofCurrentMonthInboundIncident = countofCurrentMonthInboundIncident;
+//             //  taskData.incidentarrforlastday = incidentarrforlastday;
+
+//             console.log(JSON.stringify(taskData));
+
+//             callback(null, taskData);
+//         } else {
+//             callback(error, null);
+//         }
+
+//     })
+
+// }
 
 
 
@@ -806,10 +929,17 @@ function calculateIncidentStatisticsForPastSixMonths(datas, option, assignmentgr
     var month = [];
     var months = ["JAN", "FEB", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPT", "OCT", "NOV", "DEC"];
     //    var urlforincident = `https://scholastic.service-now.com/api/now/table/incident?sysparm_query=sys_updated_onBETWEENjavascript:gs.daysAgoStart(180)@javascript:gs.daysAgoEnd(1)^assignment_group=${appConfig.accessAndCompliance}^sysparm_default_exported_fields=all`;
-    var downloadincidentCSV = `https://scholastic.service-now.com/incident.do?CSV&sysparm_fields=sys_updated_on,incident_state,assigned_to,short_description,number,sys_id,assignment_group&sysparm_query=sys_updated_onBETWEENjavascript:gs.daysAgoStart(180)@javascript:gs.daysAgoEnd(0)^assignment_group=` + assignmentgroup;
+    var downloadincidentCSV = `https://scholastic.service-now.com/incident.do?CSV&sysparm_fields=sys_updated_on,incident_state,assigned_to,short_description,number,sys_id,assignment_group,resolved_by&sysparm_query=sys_updated_onBETWEENjavascript:gs.daysAgoStart(180)@javascript:gs.daysAgoEnd(0)^assignment_group=` + assignmentgroup;
 
     var countLastdayIncidentautomated = 0, countlastdayIncidentmanual = 0, countoffailIncidentLastDay = 0, countoflastdayInboundIncident = 0;
     var countLastWeekIncidentautomated = 0, countlastWeekIncidentmanual = 0, countoffailIncidentLastWeek = 0, countoflastweekInboundIncident = 0;
+
+    var countIncidentMonth = Array(31).fill(0);
+    var countfailincident = 0;
+    var arr = [];
+
+
+    var countCurrentMonthIncidentautomated = 0, countCurrentMonthIncidentmanual = 0, countofCurrentMonthInboundIncident = 0;
 
     var options = {
         url: downloadincidentCSV,
@@ -820,6 +950,7 @@ function calculateIncidentStatisticsForPastSixMonths(datas, option, assignmentgr
         }
     }
     var countIncident = [];
+
 
     // var promise = new Promise(function (resolve, reject) {
     //     request.get(options, function (error, response, body) {
@@ -843,12 +974,40 @@ function calculateIncidentStatisticsForPastSixMonths(datas, option, assignmentgr
             .fromFile(__dirname + "/../temp/incident.csv")
             .then(function (data) { //when parse finished, result will be emitted here.
                 // console.log(data);
+
+                for (var i = 0; i < data.length; i++) {
+                    var checkformonth = new Date(data[i]["sys_updated_on"]);
+                    if (date.getMonth() === checkformonth.getMonth()) {
+                        if (data[i]["resolved_by"]) {
+                            arr.push(data[i]["resolved_by"]);
+                        }
+                    }
+
+                }
+                var uniqueforincident = arr.filter(onlyUnique);
+
+                for (var key of uniqueforincident) {
+
+                    if (!datas.graph_data[key]) {
+
+                        datas.unique.push(key);
+                        datas.graph_data[key] = {
+
+                            countOfCloseTask: 0,
+                            countOfCloseIncident: 0
+
+                        };
+                    }
+                }
+
+
                 for (var i = 0; i < data.length; i++) {
                     var check = new Date(data[i]["sys_updated_on"]);
                     var timeDiff = Math.abs(date.getTime() - check.getTime());
                     var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
                     var isautomated = data[i]['short_description'].split(' ')[0];
                     var index = new Date(data[i]["sys_updated_on"]).getMonth();
+                    var indexforMonth = new Date(data[i]["sys_updated_on"]).getDate()
                     var objforlastday = {};
                     var currentMonth = new Date().getMonth();
 
@@ -867,7 +1026,7 @@ function calculateIncidentStatisticsForPastSixMonths(datas, option, assignmentgr
 
                     }
 
-                    if ((data[i]["incident_state"] === "Resolved" || data[i]["incident_state"] === "Closed") && isautomated === "Taleo") {
+                    if ((data[i]["incident_state"] === "Resolved" || data[i]["incident_state"] === "Closed") && isautomated === "Taleo" && data[i]["resolved_by"] === "TDMS AutoBOT") {
                         if (countIncident[diff] == null || countIncident[diff] == undefined) { countIncident[diff] = 1; }
                         else {
                             countIncident[diff]++;
@@ -876,11 +1035,11 @@ function calculateIncidentStatisticsForPastSixMonths(datas, option, assignmentgr
 
                     // Last day data
                     if (diffDays >= 1 && diffDays <= 2 && (date.getMonth() === check.getMonth()) && (date.getDate() - check.getDate() === 1)) {
-                        if (isautomated === "Taleo" && (data[i]["incident_state"] === "Resolved" || data[i]["incident_state"] === "Closed")) {
+                        if (isautomated === "Taleo" && (data[i]["incident_state"] === "Resolved" || data[i]["incident_state"] === "Closed") && data[i]["resolved_by"] === "TDMS AutoBOT") {
 
                             countLastdayIncidentautomated++;
                         }
-                        else if ((data[i]["incident_state"] === "Resolved" || data[i]["incident_state"] === "Closed")) {
+                        else if ((data[i]["incident_state"] === "Resolved" || data[i]["incident_state"] === "Closed") && isautomated != "Taleo") {
                             countlastdayIncidentmanual++;
                         }
                         // checking if assigned to is no one
@@ -913,11 +1072,11 @@ function calculateIncidentStatisticsForPastSixMonths(datas, option, assignmentgr
                     }
                     else if (diffDays >= 1 && diffDays <= 2 && (date.getMonth() != check.getMonth()) && (check.getDate() === 31 || check.getDate() === 30)) {
 
-                        if (isautomated === "Taleo" && (data[i]["incident_state"] === "Resolved" || data[i]["incident_state"] === "Closed")) {
+                        if (isautomated === "Taleo" && (data[i]["incident_state"] === "Resolved" || data[i]["incident_state"] === "Closed") && data[i]["resolved_by"] === "TDMS AutoBOT") {
 
                             countLastdayIncidentautomated++;
                         }
-                        else if ((data[i]["incident_state"] === "Resolved" || data[i]["incident_state"] === "Closed")) {
+                        else if ((data[i]["incident_state"] === "Resolved" || data[i]["incident_state"] === "Closed") && isautomated != "Taleo") {
                             countlastdayIncidentmanual++;
                         }
                         // checking if assigned to is no one
@@ -948,12 +1107,12 @@ function calculateIncidentStatisticsForPastSixMonths(datas, option, assignmentgr
                     //  calculating automation statistics past week
 
                     if (diffDays >= 1 && diffDays <= 7) {
-                        if (isautomated === "Taleo" && (data[i]["incident_state"] === "Resolved" || data[i]["incident_state"] === "Closed")) {
+                        if (isautomated === "Taleo" && (data[i]["incident_state"] === "Resolved" || data[i]["incident_state"] === "Closed") && data[i]["resolved_by"] === "TDMS AutoBOT") {
 
                             countLastWeekIncidentautomated++;
                         }
 
-                        else if ((data[i]["incident_state"] === "Resolved" || data[i]["incident_state"] === "Closed")) {
+                        else if ((data[i]["incident_state"] === "Resolved" || data[i]["incident_state"] === "Closed") && isautomated != "Taleo") {
                             countlastWeekIncidentmanual++;
                         }
                         // Checking for Terminate and Security
@@ -972,7 +1131,55 @@ function calculateIncidentStatisticsForPastSixMonths(datas, option, assignmentgr
 
                     }
 
+                    // For current Month
+                    if (date.getMonth() === check.getMonth()) {
 
+                        // Here just check for the Taleo condition  
+                        if ((data[i]["incident_state"] === "Resolved" || data[i]["incident_state"] === "Closed") && isautomated === "Taleo" && data[i]["resolved_by"] === "TDMS AutoBOT") {
+
+                            // console.log(index);
+
+                            if (countIncidentMonth[indexforMonth] === null || countIncidentMonth[indexforMonth] === undefined)
+                                countIncidentMonth[indexforMonth] = 1;
+                            else countIncidentMonth[indexforMonth]++;
+                        }
+
+                        if ((data[i]["incident_state"] === "Resolved" || data[i]["incident_state"] === "Closed") && isautomated === "Taleo" && data[i]["resolved_by"] === "TDMS AutoBOT") {
+                            // console.log("bot"+data[i]["resolved_by"])
+                            datas.graph_data["TDMS AutoBOT"].countOfCloseIncident += 1;
+                        } else if ((data[i]["incident_state"] === "Resolved" || data[i]["incident_state"] === "Closed") && isautomated != "Taleo") {
+                            //  console.log("manual"+data[i]["resolved_by"])
+                            datas.graph_data[data[i]["resolved_by"]].countOfCloseIncident += 1;
+                        }
+
+
+
+                        if ((data[i]["incident_state"] !== "Resolved" && data[i]["incident_state"] !== "Closed") && isautomated === "Taleo") {
+
+                            // objforcurrentMOnth.name = appConfig[item["short_description"]].category
+                            // objforcurrentMOnth.tasknumber = item["number"];
+                            // arrforFailedTaskCurrentMOnth.push(objforcurrentMOnth);
+
+                            countfailincident++
+                        }
+
+                        if (isautomated === "Taleo" && (data[i]["incident_state"] === "Resolved" || data[i]["incident_state"] === "Closed") && data[i]["resolved_by"] === "TDMS AutoBOT") {
+
+                            countCurrentMonthIncidentautomated++;
+                        }
+                        else if ((data[i]["incident_state"] === "Resolved" || data[i]["incident_state"] === "Closed") && isautomated != "Taleo") {
+                            countCurrentMonthIncidentmanual++;
+                        }
+                        // checking if assigned to is no one
+
+
+                        //total tickets whoe state is closed complete it can be manual or automated
+                        // if ( data[i]["state"] != "Open" ) {
+                        if (data[i]["incident_state"] === "Resolved" || data[i]["incident_state"] === "Closed") {
+                            countofCurrentMonthInboundIncident++;
+                        }
+
+                    }
 
 
 
@@ -1013,6 +1220,15 @@ function calculateIncidentStatisticsForPastSixMonths(datas, option, assignmentgr
                 datas.countlastWeekTicketmanual = datas.countlastWeekTaskmanual + countlastWeekIncidentmanual;
                 datas.countoffailTicketsLastWeek = datas.countoffailtaskLastWeek + countoffailIncidentLastWeek;
                 datas.countoflastweekInboundTickets = datas.countoflastweekInboundTasks + countoflastweekInboundIncident;
+
+
+                datas.failincident = countfailincident;
+                datas.countIncident = countIncidentMonth;
+
+                datas.countCurrentMonthIncidentautomated = countCurrentMonthIncidentautomated;
+                datas.countCurrentMonthIncidentmanual = countCurrentMonthIncidentmanual;
+                datas.countofCurrentMonthInboundIncident = countofCurrentMonthInboundIncident;
+
 
                 console.log("fail incident last week" + countoffailIncidentLastWeek)
 
@@ -1058,161 +1274,124 @@ function fetchsys_idfortaskandIncident(taskandincidentData, callback) {
 
 
     var month = ["JAN", "FEB", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPT", "OCT", "NOV", "DEC"];
-    var optionsforuser = {
-        url: taskandincidentData.urlBasedonOption + taskandincidentData.unique,
-        headers: {
-            'Authorization': auth,
-            'Content-Type': 'application/json'
-        }
+
+
+
+    deleteUsersNotNeededInReport(taskandincidentData.graph_data);
+
+
+
+    for (var key in taskandincidentData.graph_data) {
+
+        countofResolvedIncident = countofResolvedIncident + taskandincidentData.graph_data[key].countOfCloseIncident;
+        countofResolvedTask = countofResolvedTask + taskandincidentData.graph_data[key].countOfCloseTask;
+
+        arrforUserTemplateTable.push({
+            name: key,
+            incidents: taskandincidentData.graph_data[key].countOfCloseIncident,
+            tasks: taskandincidentData.graph_data[key].countOfCloseTask,
+            total: (taskandincidentData.graph_data[key].countOfCloseTask) + (taskandincidentData.graph_data[key].countOfCloseIncident),
+            avgperday: Math.round(((taskandincidentData.graph_data[key].countOfCloseTask) + (taskandincidentData.graph_data[key].countOfCloseIncident)) / startdiffdays, 1)
+        });
+
+        countofresources++;
+
     }
 
-    var mappedTaskandIncidentdata = {};
-    mappedTaskandIncidentdata.graph_data = {};
+    // we can add our code here to get the percentage automation
 
-    request.get(optionsforuser, function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-            // Print out the response body
-            var obj = JSON.parse(body);
-            var sys_name = {};
-            obj.result.forEach(function (item) {
-                if (taskandincidentData.unique.includes(item["sys_id"])) {
+    // for (var key in arrforUserTemplateTable) {
 
+    //     if (arrforUserTemplateTable[key].name === "TDMS AutoBOT") {
+    //         var automationtotal = arrforUserTemplateTable[key].total;
+    //         var avgtdms = arrforUserTemplateTable[key].avgperday;
+    //     } else {
+    //         manualtotal = manualtotal + arrforUserTemplateTable[key].total;
+    //         sum_manual_avg = sum_manual_avg + arrforUserTemplateTable[key].avgperday;
+    //     }
 
-                    sys_name[item["sys_id"]] = item["name"];
-                }
-            })
+    // }
 
 
+    automationtotal = taskandincidentData.countCurrentMonthIncidentautomated + taskandincidentData.countCurrentMonthTaskautomated;
+
+    var passpercent = ((automationtotal) / (taskandincidentData.failincident + taskandincidentData.countfailtask + automationtotal)) * 100;
+    var manualForCurrentMOnth = taskandincidentData.countCurrentMonthTaskmanual + taskandincidentData.countCurrentMonthIncidentmanual
+    var botvsfteForcurrentMonth = (automationtotal / (manualForCurrentMOnth / (countofresources - 1)));
+    //  console.log("fte" + botvsfteForcurrentMonth);
+    arrforCurrentMonthtableStatistics.push({
+
+        manual: manualForCurrentMOnth,
+        BOTvsFTE: botvsfteForcurrentMonth.toFixed(0),
+        failtaskandincident: taskandincidentData.failincident + taskandincidentData.countfailtask,
+        automatedTickets: automationtotal,
+        inboundTickets: (taskandincidentData.countofCurrentMonthInboundTickets + taskandincidentData.countofCurrentMonthInboundIncident)
+    });
 
 
-            for (var keydata in taskandincidentData.graph_data) {
-                for (var keydatasys_name in sys_name) {
-                    if (keydata === keydatasys_name) {
-                        mappedTaskandIncidentdata.graph_data[sys_name[keydatasys_name]] = taskandincidentData.graph_data[keydata];
-
-                    }
-                }
-            }
+    // Here we are creating two arr for creating multi bar chart for tickets resolved each day
+    creatingMultibarChartforCurrentmonthStatistics(taskandincidentData);
+    // Final creation of object which we need in the email template
 
 
-            deleteUsersNotNeededInReport(mappedTaskandIncidentdata.graph_data);
+    //Creating array for last day and last week data for template
+
+    //var percentautomationLastday = (taskandincidentData.countLastdayTicketautomated / taskandincidentData.countoflastdayInboundTickets) * 100;
+    //var percentautomationLastWeek = (taskandincidentData.countLastWeekTicketautomated / taskandincidentData.countoflastweekInboundTickets) * 100;
+    var passPercentLastday = (taskandincidentData.countLastdayTicketautomated / (taskandincidentData.countLastdayTicketautomated + taskandincidentData.countoffailTicketLastDay)) * 100;
+    var passPercentLastWeek = (taskandincidentData.countLastWeekTicketautomated / (taskandincidentData.countLastWeekTicketautomated + taskandincidentData.countoffailTicketsLastWeek)) * 100;
+    // add condition for bot vs fte if countlastday task manual is not equal to zero (infinity)
+    if (taskandincidentData.countlastdayTicketmanual == 0) {
+        botfteforLastDay = taskandincidentData.countLastdayTicketautomated
+    } else {
+        botfteforLastDay = (taskandincidentData.countLastdayTicketautomated / (taskandincidentData.countlastdayTicketmanual / (countofresources - 1))).toFixed(0)
+    }
 
 
+    arrforLastDaytableStatistics.push({
 
-            for (var key in mappedTaskandIncidentdata.graph_data) {
+        manual: taskandincidentData.countlastdayTicketmanual,
+        BOTvsFTE: botfteforLastDay,
+        failtaskandincident: taskandincidentData.countoffailTicketLastDay,
+        automatedTickets: taskandincidentData.countLastdayTicketautomated,
+        inboundTickets: taskandincidentData.countoflastdayInboundTickets
+    });
 
-                countofResolvedIncident = countofResolvedIncident + mappedTaskandIncidentdata.graph_data[key].countOfCloseIncident;
-                countofResolvedTask = countofResolvedTask + mappedTaskandIncidentdata.graph_data[key].countOfCloseTask;
+    // Look for Bot vs Fte
+    arrforLastWeektableStatistics.push({
 
-                arrforUserTemplateTable.push({
-                    name: key,
-                    incidents: mappedTaskandIncidentdata.graph_data[key].countOfCloseIncident,
-                    tasks: mappedTaskandIncidentdata.graph_data[key].countOfCloseTask,
-                    total: (mappedTaskandIncidentdata.graph_data[key].countOfCloseTask) + (mappedTaskandIncidentdata.graph_data[key].countOfCloseIncident),
-                    avgperday: Math.round(((mappedTaskandIncidentdata.graph_data[key].countOfCloseTask) + (mappedTaskandIncidentdata.graph_data[key].countOfCloseIncident)) / startdiffdays, 1)
-                });
-
-                countofresources++;
-
-            }
-
-            // we can add our code here to get the percentage automation
-
-            // for (var key in arrforUserTemplateTable) {
-
-            //     if (arrforUserTemplateTable[key].name === "TDMS AutoBOT") {
-            //         var automationtotal = arrforUserTemplateTable[key].total;
-            //         var avgtdms = arrforUserTemplateTable[key].avgperday;
-            //     } else {
-            //         manualtotal = manualtotal + arrforUserTemplateTable[key].total;
-            //         sum_manual_avg = sum_manual_avg + arrforUserTemplateTable[key].avgperday;
-            //     }
-
-            // }
-
-
-            automationtotal = taskandincidentData.countCurrentMonthIncidentautomated + taskandincidentData.countCurrentMonthTaskautomated;
-
-            var passpercent = ((automationtotal) / (taskandincidentData.failincident + taskandincidentData.countfailtask + automationtotal)) * 100;
-            var manualForCurrentMOnth = taskandincidentData.countCurrentMonthTaskmanual + taskandincidentData.countCurrentMonthIncidentmanual
-            var botvsfteForcurrentMonth = (automationtotal / (manualForCurrentMOnth / (countofresources - 1)));
-            //  console.log("fte" + botvsfteForcurrentMonth);
-            arrforCurrentMonthtableStatistics.push({
-
-                manual: manualForCurrentMOnth,
-                BOTvsFTE: botvsfteForcurrentMonth.toFixed(0),
-                failtaskandincident: taskandincidentData.failincident + taskandincidentData.countfailtask,
-                automatedTickets: automationtotal,
-                inboundTickets: (taskandincidentData.countofCurrentMonthInboundTickets + taskandincidentData.countofCurrentMonthInboundIncident)
-            });
-
-
-            // Here we are creating two arr for creating multi bar chart for tickets resolved each day
-            creatingMultibarChartforCurrentmonthStatistics(taskandincidentData);
-            // Final creation of object which we need in the email template
-
-
-            //Creating array for last day and last week data for template
-
-            //var percentautomationLastday = (taskandincidentData.countLastdayTicketautomated / taskandincidentData.countoflastdayInboundTickets) * 100;
-            //var percentautomationLastWeek = (taskandincidentData.countLastWeekTicketautomated / taskandincidentData.countoflastweekInboundTickets) * 100;
-            var passPercentLastday = (taskandincidentData.countLastdayTicketautomated / (taskandincidentData.countLastdayTicketautomated + taskandincidentData.countoffailTicketLastDay)) * 100;
-            var passPercentLastWeek = (taskandincidentData.countLastWeekTicketautomated / (taskandincidentData.countLastWeekTicketautomated + taskandincidentData.countoffailTicketsLastWeek)) * 100;
-            // add condition for bot vs fte if countlastday task manual is not equal to zero (infinity)
-            if (taskandincidentData.countlastdayTicketmanual == 0) {
-                botfteforLastDay = taskandincidentData.countLastdayTicketautomated
-            } else {
-                botfteforLastDay = (taskandincidentData.countLastdayTicketautomated / (taskandincidentData.countlastdayTicketmanual / (countofresources - 1))).toFixed(0)
-            }
-
-
-            arrforLastDaytableStatistics.push({
-
-                manual: taskandincidentData.countlastdayTicketmanual,
-                BOTvsFTE: botfteforLastDay,
-                failtaskandincident: taskandincidentData.countoffailTicketLastDay,
-                automatedTickets: taskandincidentData.countLastdayTicketautomated,
-                inboundTickets: taskandincidentData.countoflastdayInboundTickets
-            });
-
-            // Look for Bot vs Fte
-            arrforLastWeektableStatistics.push({
-
-                manual: taskandincidentData.countlastWeekTicketmanual,
-                BOTvsFTE: (taskandincidentData.countLastWeekTicketautomated / (taskandincidentData.countlastWeekTicketmanual / (countofresources - 1))).toFixed(0),
-                failtaskandincident: taskandincidentData.countoffailTicketsLastWeek,
-                automatedTickets: taskandincidentData.countLastWeekTicketautomated,
-                inboundTickets: taskandincidentData.countoflastweekInboundTickets
-            });
+        manual: taskandincidentData.countlastWeekTicketmanual,
+        BOTvsFTE: (taskandincidentData.countLastWeekTicketautomated / (taskandincidentData.countlastWeekTicketmanual / (countofresources - 1))).toFixed(0),
+        failtaskandincident: taskandincidentData.countoffailTicketsLastWeek,
+        automatedTickets: taskandincidentData.countLastWeekTicketautomated,
+        inboundTickets: taskandincidentData.countoflastweekInboundTickets
+    });
 
 
 
-            jsonobjectForMail = {
+    jsonobjectForMail = {
 
-                userTable: arrforUserTemplateTable,
-                totalstatisticstable: arrforTotalStatisticsTable,
-                currentmonth: month[curmonth],
-                todaydate: date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear(),
-                groupname: "Access and Compliance",
-                resourcecount: countofresources,
-                currentMonthstatisticstable: arrforCurrentMonthtableStatistics,
-                failedTasksAndIncidentLastday: taskandincidentData.arrforLastdayData,
-                lastdayTableStatistics: arrforLastDaytableStatistics,
-                lastWeekTableStatistics: arrforLastWeektableStatistics,
-                failedTasksandINcidentCurrentMonth: taskandincidentData.arrforFailedTaskCurrentMOnth
-            };
-
-
-            // Function for Creating Pie Chart for task and incident Inbound Statistics
-            console.log(jsonobjectForMail)
-            createPieChartForInboundTaskandIncident(taskandincidentData.countofCurrentMonthInboundIncident, taskandincidentData.countofCurrentMonthInboundTickets)
+        userTable: arrforUserTemplateTable,
+        currentmonth: month[curmonth],
+        todaydate: date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear(),
+        groupname: "Access and Compliance",
+        resourcecount: countofresources,
+        currentMonthstatisticstable: arrforCurrentMonthtableStatistics,
+        failedTasksAndIncidentLastday: taskandincidentData.arrforLastdayData,
+        lastdayTableStatistics: arrforLastDaytableStatistics,
+        lastWeekTableStatistics: arrforLastWeektableStatistics,
+        // failedTasksandINcidentCurrentMonth: taskandincidentData.arrforFailedTaskCurrentMOnth
+    };
 
 
-            callback(null, jsonobjectForMail);
-        } else {
-            callback(error, null);
-        }
-    })
+    // Function for Creating Pie Chart for task and incident Inbound Statistics
+    console.log(jsonobjectForMail)
+    createPieChartForInboundTaskandIncident(taskandincidentData.countofCurrentMonthInboundIncident, taskandincidentData.countofCurrentMonthInboundTickets)
+
+
+    callback(null, jsonobjectForMail);
+
+
 }
 
 

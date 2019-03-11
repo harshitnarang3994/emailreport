@@ -675,45 +675,7 @@
                     <% } %>
                 </table>
             </div>
-            <!-- 
-         <div>
-            <table class="uppertable">
-               <tr>
-                  <th>State</th>
-                  <th>Incidents</th>
-                  <th>Tasks</th>
-                  <th>Total</th>
-
-
-               </tr>
-
-               <% for (var i = 0; i < totalstatisticstable.length; /* I save the data in a variable 'quotation', I don't know how you named your variable  */  i++) { %>
-
-               <% if(i%2 === 0) {%>
-
-               <tr bgcolor="#97FE8F">
-                  <%}else{%>
-               <tr bgcolor="yellow">
-                  <%}%>
-                  <td><b>
-                        <%= totalstatisticstable[i].state %>
-                     </b>
-                  </td>
-                  <td>
-                     <%= totalstatisticstable[i].incidents %>
-                  </td>
-                  <td>
-                     <%= totalstatisticstable[i].tasks  %>
-                  </td>
-                  <td>
-                     <%= totalstatisticstable[i].total  %>
-                  </td>
-
-               </tr>
-               <% } %>
-            </table>
-
-         </div> -->
+        
 
             <!-- Template for past week -->
 
@@ -825,47 +787,7 @@
 
 
 
-            <!-- <%if(failedTasksandINcidentCurrentMonth.length>0){%>
-         <div>
-            <h4 style="padding-left: 11px;"><b style=" letter-spacing: 2px;
-                  font-family: Montserrat,sans-serif;">Failed
-                  Runs Current Month</b></h4>
-
-
-
-            <table class="uppertable">
-               <tr>
-                  <th>Ticket Number</th>
-                  <th> BOT Name</th>
-
-
-               </tr>
-
-               <% for (var i = 0; i < failedTasksandINcidentCurrentMonth.length; /* I save the data in a variable 'quotation', I don't know how you named your variable  */  i++) { %>
-               <%if(i%2==0){%>
-               <tr style="background-color: #b8bcd278">
-
-                  <%}else{%>
-               <tr>
-                  <%}%>
-                  <td><b>
-                        <a href="https://scholasticdev.service-now.com/nav_to.do?uri=%2Fsc_task_list.do">
-                           <%= failedTasksandINcidentCurrentMonth[i].tasknumber %></a>
-                     </b>
-                  </td>
-                  <td>
-                     <%= failedTasksandINcidentCurrentMonth[i].name %>
-                  </td>
-
-
-               </tr>
-               <% } %>
-            </table>
-
-         </div>
-         <%}%> -->
-
-
+        
             <!-- <div>
                 <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
                     <div style="background-color:aqua;   border-bottom-left-radius:50%;

@@ -3,6 +3,8 @@ var nodeMailer = require('nodemailer');
 var ejs = require('ejs');
 var snowTaskEmailService = require('./services/snowTaskEmailService');
 var logger = require('./logger/logger').successlog;
+
+
 //var puppeteer = require('puppeteer');
 //var fs = require('fs')
 
@@ -43,29 +45,32 @@ function sendEmail() {
                 '<div style="background-color:aqua;   border-bottom-left-radius:50%;border-bottom-right-radius:50%;">' +
                 '<h3 class="font-family" style="text-align: center;"><u>Automation Statistics For Current Month</u></h3>' +
                 '</div>' +
-                '<img style="background-color: antiquewhite;width: 450px;" src="./automationstatisticseverydaystackedBarChart.png">' +
+                '<img style="background-color: antiquewhite;width: 450px;" src="./temp/automationstatisticseverydaystackedBarChart.png">' +
                 '</div>' +
                 '<div class="col-md-5 col-lg-5 col-sm-12 col-xs-12">' +
                 '<div style="background-color:aqua;   border-bottom-left-radius:50%; border-bottom-right-radius:50%;">' +
                 '<h3 class="font-family" style="text-align: center;"><u>Processed Task and Incident</u></h3>' +
                 '</div>' +
-                '<img src="./TaskandIncidentpieChart.png" style="width: 370px;background-color: antiquewhite;">' +
+                '<img src="./temp/TaskandIncidentpieChart.png" style="width: 370px;background-color: antiquewhite;">' +
                 '</div>' +
                 '<div class="w-100"></div>' +
                 '<div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">' +
                 '<div style="background-color:aqua;   border-bottom-left-radius:50%;border-bottom-right-radius:50%;">' +
                 '<h3 class="font-family" style="text-align: center;"><u>Automation Statistics Past Six Months</u></h3>' +
                 '</div>' +
-                '<img src="automationstatisticspastSixmonthsstackedBarChart.png" style="background-color: antiquewhite;width: 450px;">' +
+                '<img src="./temp/automationstatisticspastSixmonthsstackedBarChart.png" style="background-color: antiquewhite;width: 450px;">' +
                 '</div>' +
                 '<div class="col-md-5 col-lg-5 col-sm-12 col-xs-12">' +
                 '<div style="background-color:aqua;   border-bottom-left-radius:50%;border-bottom-right-radius:50%;">' +
                 '<h3 class="font-family" style="text-align: center;"><u>Tickets Automated Category Based</u></h3>' +
                 '</div>' +
-                '<img src="automationstackedBarChart.png" style="background-color: antiquewhite;width: 430px;">' +
+                '<img src="./temp/automationstackedBarChart.png" style="background-color: antiquewhite;width: 430px;">' +
                 '</div>' +
 
                 '</div>'
+
+
+
 
             // fs.writeFile("./temp/template.html", html2, function (err) {
             //     if (err) {
@@ -86,10 +91,8 @@ function sendEmail() {
             // For graph section we can append the original html with the graph div 
             // So there will be two html one for email part and other for the pdf part  
 
-
-
-
-
+            
+            
 
             var MailOptions = {
                 from: appConfig.SenderEmailAddress,
@@ -145,7 +148,7 @@ function sendEmail() {
                 },
                 {
                     filename: 'logger',
-                    path: __dirname + '/logs/sendemail.log.' + date.getFullYear() + '-' + '0' + (date.getMonth() + 1) + '-' + '0' + date.getDate()
+                    path: __dirname + '/logs/sendemail.log.' + date.getFullYear() + '-' + '0' + (date.getMonth() + 1) + '-'      + date.getDate()
 
                 }]
             }
