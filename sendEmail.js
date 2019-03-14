@@ -17,7 +17,7 @@ function sendEmail() {
     var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
     var starttimeDiff = Math.abs(firstDay.getTime() - date.getTime());
     var startdiffdays = Math.ceil(starttimeDiff / (1000 * 3600 * 24));
-    var queryobjfortabularmail = { "startdiff": startdiffdays - 1, "enddiff": "0", "assignmentgroup": appConfig.accessAndCompliance };
+    var queryobjfortabularmail = { "startdiff": startdiffdays - 1, "enddiff": "0", "assignmentgroup": appConfig.all[0]+'^ORassignment_group='+appConfig.all[1]+'^ORassignment_group='+appConfig.all[2]}
     var date = new Date();
     var _browser;
     var _page;
@@ -45,26 +45,26 @@ function sendEmail() {
                 '<div style="background-color:aqua;   border-bottom-left-radius:50%;border-bottom-right-radius:50%;">' +
                 '<h3 class="font-family" style="text-align: center;"><u>Automation Statistics For Current Month</u></h3>' +
                 '</div>' +
-                '<img style="background-color: antiquewhite;width: 450px;" src="./temp/automationstatisticseverydaystackedBarChart.png">' +
+                '<img style="background-color: antiquewhite;width: 450px;" src="automationstatisticseverydaystackedBarChart.png">' +
                 '</div>' +
                 '<div class="col-md-5 col-lg-5 col-sm-12 col-xs-12">' +
                 '<div style="background-color:aqua;   border-bottom-left-radius:50%; border-bottom-right-radius:50%;">' +
                 '<h3 class="font-family" style="text-align: center;"><u>Processed Task and Incident</u></h3>' +
                 '</div>' +
-                '<img src="./temp/TaskandIncidentpieChart.png" style="width: 370px;background-color: antiquewhite;">' +
+                '<img src="TaskandIncidentpieChart.png" style="width: 370px;background-color: antiquewhite;">' +
                 '</div>' +
                 '<div class="w-100"></div>' +
                 '<div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">' +
                 '<div style="background-color:aqua;   border-bottom-left-radius:50%;border-bottom-right-radius:50%;">' +
                 '<h3 class="font-family" style="text-align: center;"><u>Automation Statistics Past Six Months</u></h3>' +
                 '</div>' +
-                '<img src="./temp/automationstatisticspastSixmonthsstackedBarChart.png" style="background-color: antiquewhite;width: 450px;">' +
+                '<img src="automationstatisticspastSixmonthsstackedBarChart.png" style="background-color: antiquewhite;width: 450px;">' +
                 '</div>' +
                 '<div class="col-md-5 col-lg-5 col-sm-12 col-xs-12">' +
                 '<div style="background-color:aqua;   border-bottom-left-radius:50%;border-bottom-right-radius:50%;">' +
                 '<h3 class="font-family" style="text-align: center;"><u>Tickets Automated Category Based</u></h3>' +
                 '</div>' +
-                '<img src="./temp/automationstackedBarChart.png" style="background-color: antiquewhite;width: 430px;">' +
+                '<img src="automationstackedBarChart.png" style="background-color: antiquewhite;width: 430px;">' +
                 '</div>' +
 
                 '</div>'
@@ -145,11 +145,6 @@ function sendEmail() {
                     filename: 'automationstatisticspastSixmonthsstackedBarChart.png',
                     path: __dirname + '/temp/automationstatisticspastSixmonthsstackedBarChart.png',
                     cid: 'image4'
-                },
-                {
-                    filename: 'logger',
-                    path: __dirname + '/logs/sendemail.log.' + date.getFullYear() + '-' + '0' + (date.getMonth() + 1) + '-'      + date.getDate()
-
                 }]
             }
 

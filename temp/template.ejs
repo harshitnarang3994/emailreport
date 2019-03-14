@@ -523,9 +523,9 @@
             </div>
 
             <div>
-                <h3 class="font-family" style="    padding-left: 11px;">Group -
+                <!-- <h3 class="font-family" style="    padding-left: 11px;">Group -
                     <%= groupname%>
-                </h3>
+                </h3> -->
                 <h4 style="border-bottom: 1px solid #ccc;    padding-left: 11px; letter-spacing: 2px;
             font-family: Montserrat,sans-serif;">BOT
                     Statistics Last Day</h4>
@@ -675,7 +675,7 @@
                     <% } %>
                 </table>
             </div>
-        
+
 
             <!-- Template for past week -->
 
@@ -786,8 +786,45 @@
             </div>
 
 
+            <div>
+                <h4 style="padding-left: 11px;"><b style=" letter-spacing: 2px;
+               font-family: Montserrat,sans-serif;">BOT
+                        Statistics</b></h4>
 
-        
+
+
+                <table class="uppertable">
+                    <tr>
+                        <th>BOT Name</th>
+                        <th>Automated Tickets Current Month</th>
+                        <th>Automated Tickets Past Six Month</th>
+                    </tr>
+
+                    <% for (var i = 0; i < arrforindividualBOTcount.length; /* I save the data in a variable 'quotation', I don't know how you named your variable  */  i++) { %>
+                    <%if(i%2==0){%>
+                    <tr style="background-color: #b8bcd278">
+
+                        <%}else{%>
+                    <tr>
+                        <%}%>
+                        <td><b>
+                                <%= arrforindividualBOTcount[i].name %>
+                            </b>
+                        </td>
+                        <td>
+                            <%= arrforindividualBOTcount[i].countcurrMonth %>
+                        </td>
+                        <td>
+                            <%= arrforindividualBOTcount[i].countpastSixMonths %>
+                        </td>
+
+
+                    </tr>
+                    <% } %>
+                </table>
+
+            </div>
+
             <!-- <div>
                 <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
                     <div style="background-color:aqua;   border-bottom-left-radius:50%;
