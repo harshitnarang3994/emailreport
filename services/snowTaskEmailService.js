@@ -750,12 +750,20 @@ function calculateIncidentStatisticsForPastSixMonths(datas, option, assignmentgr
 
                 for (var i = 0; i < data.length; i++) {
                     var check = new Date(data[i]['resolved_at']);
+
+                    var checkforclosed = new Date(data[i]['closed_at'])
                     //  console.log(check)
                     var timeDiff = Math.abs(date.getTime() - check.getTime());
                     var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                    
+                    var timeDiffclosed = Math.abs(date.getTime() - checkforclosed.getTime());
+                    var diffDaysclosed = Math.ceil(timeDiffclosed / (1000 * 3600 * 24));
+
                     var isautomated = data[i]['short_description'].split(' ')[0];
                     var index = new Date(data[i]["resolved_at"]).getMonth();
+                  
                     var indexforMonth = new Date(data[i]["resolved_at"]).getDate()
+                    var closedindexforMonth = new Date(data[i]["closed_at"]).getDate()
                     var objforlastday = {};
                     var currentMonth = new Date().getMonth();
 
@@ -784,7 +792,7 @@ function calculateIncidentStatisticsForPastSixMonths(datas, option, assignmentgr
                     }
 
                     // Last day data
-                    if (diffDays >= 1 && diffDays <= 2 && (date.getMonth() === check.getMonth()) && (date.getDate() - check.getDate() === 1)) {
+                    if ((diffDays >= 1 && diffDays <= 2 && (date.getMonth() === check.getMonth()) && (date.getDate() - check.getDate() === 1)) || (diffDaysclosed >= 1 && diffDaysclosed <= 2 && (date.getMonth() === checkforclosed.getMonth()) && (date.getDate() - checkforclosed.getDate() === 1))) {
                         if (isautomated === "Taleo" && (data[i]["incident_state"] === "Resolved" || data[i]["incident_state"] === "Closed") && data[i]["assigned_to"] === "TDMS AutoBOT") {
 
                             countLastdayIncidentautomated++;
@@ -856,7 +864,7 @@ function calculateIncidentStatisticsForPastSixMonths(datas, option, assignmentgr
                     }
                     //  calculating automation statistics past week
 
-                    if (diffDays >= 1 && diffDays <= 7) {
+                    if ((diffDays >= 1 && diffDays <= 7) ||(diffDaysclosed>= 1 && diffDaysclosed <= 7)) {
                         if (isautomated === "Taleo" && (data[i]["incident_state"] === "Resolved" || data[i]["incident_state"] === "Closed") && data[i]["assigned_to"] === "TDMS AutoBOT") {
 
                             countLastWeekIncidentautomated++;
@@ -882,16 +890,24 @@ function calculateIncidentStatisticsForPastSixMonths(datas, option, assignmentgr
                     }
 
                     // For current Month
-                    if (date.getMonth() === check.getMonth()) {
+                    if (date.getMonth() === check.getMonth() || date.getMonth() === checkforclosed.getMonth()) {
 
                         // Here just check for the Taleo condition  
-                        if ((data[i]["incident_state"] === "Resolved" || data[i]["incident_state"] === "Closed") && isautomated === "Taleo" && data[i]["assigned_to"] === "TDMS AutoBOT") {
+                        if ((data[i]["incident_state"] === "Resolved" || data[i]["incident_state"] === "Closed") && isautomated === "Taleo" && data[i]["assigned_to"] === "TDMS AutoBOT" && date.getMonth() === check.getMonth()) {
 
                             // console.log(index);
 
                             if (countIncidentMonth[indexforMonth] === null || countIncidentMonth[indexforMonth] === undefined)
                                 countIncidentMonth[indexforMonth] = 1;
                             else countIncidentMonth[indexforMonth]++;
+                        }
+                        else if ((data[i]["incident_state"] === "Resolved" || data[i]["incident_state"] === "Closed") && isautomated === "Taleo" && data[i]["assigned_to"] === "TDMS AutoBOT" && date.getMonth() === checkforclosed.getMonth()) {
+
+                            // console.log(index);
+
+                            if (countIncidentMonth[closedindexforMonth] === null || countIncidentMonth[closedindexforMonth] === undefined)
+                                countIncidentMonth[closedindexforMonth] = 1;
+                            else countIncidentMonth[closedindexforMonth]++;
                         }
 
                         if ((data[i]["incident_state"] === "Resolved" || data[i]["incident_state"] === "Closed") && isautomated === "Taleo" && data[i]["assigned_to"] === "TDMS AutoBOT") {
