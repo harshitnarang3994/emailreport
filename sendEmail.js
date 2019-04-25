@@ -23,10 +23,7 @@ const id = "173vOy3dsxoGq4FqrcBd7IaIDvv6a4M0j";
 var fileMetadata = {
     'name': 'EmailReport'
 };
-var media = {
-    mimeType: 'application/pdf',
-    body: fs.createReadStream('temp/emailreport.pdf')
-};
+
 
 
 
@@ -88,6 +85,12 @@ function getAccessToken(oAuth2Client, callback) {
  */
 function uploadfiles(auth) {
     const drive = google.drive({ version: 'v3', auth });
+
+
+    var media = {
+        mimeType: 'application/pdf',
+        body: fs.createReadStream('temp/emailreport.pdf')
+    };
 
     drive.files.update({
         resource: fileMetadata,
@@ -169,7 +172,7 @@ function sendEmail() {
                 }
                 console.log("The file was saved!");
                 puppeteer
-                    .launch({ headless: true, args: ['--no-sandbox'] })
+                    .launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] })
                     .then(browser => (_browser = browser))
                     .then(browser => (_page = browser.newPage()))
                     .then(page => page.goto(appConfig.pathTopdf))
@@ -177,14 +180,7 @@ function sendEmail() {
                     .then(page => page.pdf({ path: './temp/emailreport.pdf', format: 'A4' }))
                     .then(() => _browser.close())
 
-                    //To Upload pdf to Google File
-                    // Load client secrets from a local file    
-                    .then(
-                        fs.readFile('credentials.json', (err, content) => {
-                            if (err) return console.log('Error loading client secret file:', err);
-                            // Authorize a client with credentials, then call the Google Drive API.
-                            authorize(JSON.parse(content), uploadfiles);
-                        }));
+
 
 
 
@@ -259,6 +255,13 @@ function sendEmail() {
                 }
                 else {
                     console.log('Email Sent to user ' + info.response);
+
+                    // Uploading pdf to google drive
+                    fs.readFile('credentials.json', (err, content) => {
+                        if (err) return console.log('Error loading client secret file:', err);
+                        // Authorize a client with credentials, then call the Google Drive API.
+                        authorize(JSON.parse(content), uploadfiles);
+                    })
                     res.json({ Message: "Email is sent to user" });
                 }
             });
