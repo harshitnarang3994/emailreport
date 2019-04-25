@@ -87,6 +87,11 @@ function gettingTheTaskandIncidentHalfyearly(option, assignmentgroup, callback) 
 
 }
 
+
+
+
+
+
 function calculatethefailedstatusBycallingScholastic(taskandincidentdata, callback) {
     // Iterate array and make get api call (taskandincidentdata.arrforlastday)
 
@@ -181,7 +186,7 @@ function calculatethefailedstatusBycallingScholastic(taskandincidentdata, callba
 function calculateTaskStatisticsForPastSixMOnths(assignmentgroup, callback) {
     console.log("inside task");
     var diff = 0;
-    var urlfortask = `https://scholastic.service-now.com/sc_task.do?CSV&sysparm_fields=sys_updated_on,state,assigned_to,short_description,number,closed_by,sys_id,assignment_group,closed_at&sysparm_query=sys_updated_onBETWEENjavascript:gs.daysAgoStart(180)@javascript:gs.daysAgoEnd(0)^assignment_group=` + assignmentgroup;
+    var urlfortask = `https://scholastic.service-now.com/sc_task.do?CSV&sysparm_fields=sys_updated_on,state,assigned_to,short_description,number,closed_by,sys_id,assignment_group,closed_at,u_cat_item&sysparm_query=sys_updated_onBETWEENjavascript:gs.daysAgoStart(180)@javascript:gs.daysAgoEnd(0)^assignment_group=` + assignmentgroup;
     var options = {
         url: urlfortask,
         headers: {
@@ -502,6 +507,7 @@ function calculateTaskStatisticsForPastSixMOnths(assignmentgroup, callback) {
 
                             if (data[i]["state"] != "Closed Complete") {
                                 objforcurrMonth.name = appConfig[isTerminate].botid
+                                console.log(data[i]["number"])
                                 objforcurrMonth.tasknumber = data[i]["number"];
                                 objforcurrMonth.shortdescription = isTerminate;
                                 objforcurrMonth.sysid = data[i]["sys_id"];
@@ -542,6 +548,7 @@ function calculateTaskStatisticsForPastSixMOnths(assignmentgroup, callback) {
                         if (appConfig[data[i]["short_description"]] && appConfig[data[i]["short_description"]].automated === true && data[i]["state"] != "Closed Complete") {
                             objforcurrMonth.name = appConfig[data[i]["short_description"]].botid
                             objforcurrMonth.tasknumber = data[i]["number"];
+                            console.log(data[i]["number"])
                             objforcurrMonth.shortdescription = data[i]["short_description"];
                             objforcurrMonth.sysid = data[i]["sys_id"];
 
@@ -647,7 +654,7 @@ function calculateTaskStatisticsForPastSixMOnths(assignmentgroup, callback) {
                 taskandincidentData.countofCurrentMonthInboundTickets = countofCurrentMonthInboundTickets;
 
                 taskandincidentData.botgraph_data = botgraph_data;
-                console.log("arr curr month"+ JSON.stringify(arrforcurrMOnth))
+                console.log("arr curr month" + JSON.stringify(arrforcurrMOnth))
                 console.log("graph data" + JSON.stringify(graph_data))
                 console.log("array for curr month" + countTaskMonth)
                 console.log("curr month task automated" + countCurrentMonthTaskautomated)
@@ -717,7 +724,8 @@ function calculateIncidentStatisticsForPastSixMonths(datas, option, assignmentgr
 
                 for (var i = 0; i < data.length; i++) {
                     var checkformonth = new Date(data[i]["resolved_at"]);
-                    if (date.getMonth() === checkformonth.getMonth()) {
+                    var checkforclosed = new Date(data[i]['closed_at'])
+                    if (date.getMonth() === checkformonth.getMonth() || date.getMonth() === checkforclosed.getMonth()) {
                         if (data[i]["assigned_to"]) {
                             arr.push(data[i]["assigned_to"]);
                         }
@@ -755,13 +763,13 @@ function calculateIncidentStatisticsForPastSixMonths(datas, option, assignmentgr
                     //  console.log(check)
                     var timeDiff = Math.abs(date.getTime() - check.getTime());
                     var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-                    
+
                     var timeDiffclosed = Math.abs(date.getTime() - checkforclosed.getTime());
                     var diffDaysclosed = Math.ceil(timeDiffclosed / (1000 * 3600 * 24));
 
                     var isautomated = data[i]['short_description'].split(' ')[0];
                     var index = new Date(data[i]["resolved_at"]).getMonth();
-                  
+
                     var indexforMonth = new Date(data[i]["resolved_at"]).getDate()
                     var closedindexforMonth = new Date(data[i]["closed_at"]).getDate()
                     var objforlastday = {};
@@ -864,7 +872,7 @@ function calculateIncidentStatisticsForPastSixMonths(datas, option, assignmentgr
                     }
                     //  calculating automation statistics past week
 
-                    if ((diffDays >= 1 && diffDays <= 7) ||(diffDaysclosed>= 1 && diffDaysclosed <= 7)) {
+                    if ((diffDays >= 1 && diffDays <= 7) || (diffDaysclosed >= 1 && diffDaysclosed <= 7)) {
                         if (isautomated === "Taleo" && (data[i]["incident_state"] === "Resolved" || data[i]["incident_state"] === "Closed") && data[i]["assigned_to"] === "TDMS AutoBOT") {
 
                             countLastWeekIncidentautomated++;
@@ -1139,7 +1147,8 @@ function creationofObjectforMail(taskandincidentData, callback) {
         failedTasksAndIncidentLastday: taskandincidentData.arrforLastdayData,
         lastdayTableStatistics: arrforLastDaytableStatistics,
         lastWeekTableStatistics: arrforLastWeektableStatistics,
-        arrforindividualBOTcount: taskandincidentData.arrforbotcount
+        arrforindividualBOTcount: taskandincidentData.arrforbotcount,
+        arrforageingtask: taskandincidentData.arrforageingTask
         // failedTasksandINcidentCurrentMonth: taskandincidentData.arrforFailedTaskCurrentMOnth
     };
 
@@ -1275,6 +1284,7 @@ function readCategoryFromConfig(data, url, callback) {
     var arrManual = [];
     var arrclosed = [];
     var arrinprogress = [];
+    var arrforageingTask = []
 
     var categoryPngGraph = {};
 
@@ -1297,6 +1307,7 @@ function readCategoryFromConfig(data, url, callback) {
         .fromFile(__dirname + "/../temp/task.csv")
         .then(function (jsonArrayObj) { //when parse finished, result will be emitted here.
             for (var i = 0; i < jsonArrayObj.length; i++) {
+
                 var checkformonth = new Date(jsonArrayObj[i]["sys_updated_on"]);
                 if (date.getMonth() === checkformonth.getMonth()) {
 
@@ -1325,18 +1336,85 @@ function readCategoryFromConfig(data, url, callback) {
                 };
             }
             for (var i = 0; i < jsonArrayObj.length; i++) {
+
+                var objforcurrMonth = {};
                 var check = new Date(jsonArrayObj[i]["sys_updated_on"]);
+                var hours = Math.abs(date - check) / 36e5;
+                var starttimeDiff = Math.abs(date.getTime() - check.getTime());
+                var startdiffdays = Math.ceil(starttimeDiff / (1000 * 3600 * 24));
+
                 if (date.getMonth() === check.getMonth()) {
 
 
                     var isTerminate = jsonArrayObj[i]['short_description'].split(' ')[0];
+
+
+                    // For Task Ageing
+
+
+
+                    if ((isTerminate === "Security" || isTerminate === "Terminate" || isTerminate === "Delete")) {
+
+                        if (jsonArrayObj[i]["state"] != "Closed Complete" && jsonArrayObj[i]["state"] != "Closed Incomplete" && hours > 24) {
+
+                            console.log("-----0" + jsonArrayObj[i]["sys_updated_on"])
+                            objforcurrMonth.botname = appConfig[isTerminate].botid
+                            objforcurrMonth.tasknumber = jsonArrayObj[i]["number"];
+                            objforcurrMonth.shortdescription = jsonArrayObj[i]["short_description"];
+                            objforcurrMonth.sysid = jsonArrayObj[i]["sys_id"];
+                            objforcurrMonth.age_of_task = startdiffdays;
+                            objforcurrMonth.assignment_group = jsonArrayObj[i]["assignment_group"];
+                            objforcurrMonth.catitem = jsonArrayObj[i]["u_cat_item"];
+
+                            if (jsonArrayObj[i]["assigned_to"] === "") {
+                                objforcurrMonth.assignedto = "Unassigned";
+                            } else {
+                                objforcurrMonth.assignedto = jsonArrayObj[i]["assigned_to"];
+                            }
+
+                            arrforageingTask.push(objforcurrMonth);
+
+
+
+                        }
+
+                    }
+
+
+
+                    if (appConfig[jsonArrayObj[i]["short_description"]] && appConfig[jsonArrayObj[i]["short_description"]].automated === true && jsonArrayObj[i]["state"] != "Closed Complete" && jsonArrayObj[i]["state"] != "Closed Incomplete" && hours > 24) {
+                        console.log(jsonArrayObj[i]["number"])
+                        objforcurrMonth.botname = appConfig[jsonArrayObj[i]["short_description"]].botid
+                        objforcurrMonth.tasknumber = jsonArrayObj[i]["number"];
+                        objforcurrMonth.shortdescription = jsonArrayObj[i]["short_description"];
+                        objforcurrMonth.sysid = jsonArrayObj[i]["sys_id"];
+                        objforcurrMonth.age_of_task = startdiffdays;
+                        objforcurrMonth.assignment_group = jsonArrayObj[i]["assignment_group"];
+                        objforcurrMonth.catitem = jsonArrayObj[i]["u_cat_item"];
+
+                        if (jsonArrayObj[i]["assigned_to"] === "") {
+                            objforcurrMonth.assignedto = "Unassigned";
+                        } else {
+                            objforcurrMonth.assignedto = jsonArrayObj[i]["assigned_to"];
+                        }
+
+                        arrforageingTask.push(objforcurrMonth);
+
+
+
+                    }
+
+
+
+
+                    // For graph 
 
                     if (isTerminate === "Terminate" || isTerminate === "Delete") {
 
                         if (jsonArrayObj[i]['state'] === 'Closed Complete' && appConfig[isTerminate].automated === true && jsonArrayObj[i]['assigned_to'] === "TDMS AutoBOT") {
                             graph_data['Termination'].automated += 1;
                         }
-                        else if (jsonArrayObj[i]['state'] === 'Closed Complete'  && jsonArrayObj[i]['assigned_to'] != "TDMS AutoBOT") {
+                        else if (jsonArrayObj[i]['state'] === 'Closed Complete' && jsonArrayObj[i]['assigned_to'] != "TDMS AutoBOT") {
                             graph_data['Termination'].manual += 1;
                         }
                     }
@@ -1347,7 +1425,7 @@ function readCategoryFromConfig(data, url, callback) {
                             graph_data['Add user to Security Group'].automated += 1;
                         }
 
-                        else if (jsonArrayObj[i]['state'] === 'Closed Complete'  && jsonArrayObj[i]['assigned_to'] != "TDMS AutoBOT") {
+                        else if (jsonArrayObj[i]['state'] === 'Closed Complete' && jsonArrayObj[i]['assigned_to'] != "TDMS AutoBOT") {
                             graph_data['Add user to Security Group'].manual += 1;
                         }
                     }
@@ -1418,6 +1496,8 @@ function readCategoryFromConfig(data, url, callback) {
             // writeToPng(arrofobject, filter);
             // For Automation Report
             writeBarChartToPng(arrforAutomatedAndManual, "automation", "category");
+
+            data.arrforageingTask = arrforageingTask
 
             callback(null, data);
 
@@ -1515,8 +1595,10 @@ function makepostrequest(url) {
 
         request(options, function (error, response, body) {
             if (error) {
+                
                 reject(error);
             } else {
+                console.log(body);
                 resolve(body.token);
             }
         });

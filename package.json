@@ -13,11 +13,13 @@
     "ejs": "^2.6.1",
     "express": "~4.16.0",
     "fs": "0.0.2",
+    "googleapis": "^27.0.0",
     "http-errors": "~1.6.2",
     "morgan": "~1.9.0",
     "nodemailer": "^4.6.3",
     "promise": "^8.0.2",
     "pug": "2.0.0-beta11",
+    "puppeteer": "^1.13.0",
     "request": "^2.69.0",
     "vega": "^4.4.0",
     "winston": "0.8.3"

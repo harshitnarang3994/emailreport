@@ -786,9 +786,65 @@
             </div>
 
 
+
+
+            <!-- TASK Ageing Data -->
             <div>
-                <h4 style="padding-left: 11px;"><b style=" letter-spacing: 2px;
-               font-family: Montserrat,sans-serif;">Tickets Resolved Per BOT</b></h4>
+                <h3 class="font-family" style="border-bottom: 1px solid #ccc;padding-left: 11px;">BOT Failures Current Month(Ageing Data)</h3>
+
+
+
+                <table class="uppertable">
+                    <tr>
+                        <th>BOT Name</th>
+                        <th>Task Number</th>
+                        <th>Short Description</th>
+                        <th>Age of Task</th>
+                        <th>Assignment Group</th>
+                        <th>Catalog Item</th>
+                    </tr>
+
+                    <% for (var i = 0; i < arrforageingtask.length; /* I save the data in a variable 'quotation', I don't know how you named your variable  */  i++) { %>
+                    <%if(i%2==0){%>
+                    <tr style="background-color: #b8bcd278">
+
+                        <%}else{%>
+                    <tr>
+                        <%}%>
+                        <td><b>
+                                <%= arrforageingtask[i].botname %>
+                            </b>
+                        </td>
+                        <td>
+                            <%= arrforageingtask[i].tasknumber %>
+                        </td>
+                        <td>
+                            <%= arrforageingtask[i].shortdescription %>
+                        </td>
+                        <td>
+                            <%= arrforageingtask[i].age_of_task %>
+                        </td>
+                        <td>
+                            <%= arrforageingtask[i].assignment_group %>
+                        </td>
+                        <td>
+                            <%= arrforageingtask[i].catitem %>
+                        </td>
+
+
+                    </tr>
+                    <% } %>
+                </table>
+
+            </div>
+
+
+
+
+            <!-- ------------------------ -->
+
+            <div>
+                <h3 class="font-family" style="border-bottom: 1px solid #ccc;padding-left: 11px;">Tickets Resolved Per BOT</h3>
 
 
 
