@@ -87,6 +87,8 @@ function uploadfiles(auth) {
     const drive = google.drive({ version: 'v3', auth });
 
 
+    var start = Date.now();
+    console.log("start"+start);
     var media = {
         mimeType: 'application/pdf',
         body: fs.createReadStream('temp/emailreport.pdf')
@@ -107,6 +109,13 @@ function uploadfiles(auth) {
 }
 //1kzSgbYwHT4ZEOV6sEIqFgkCBmFqLKRkB
 function sendEmail() {
+  
+//      Delete the old pdf file
+//     fs.unlink('./temp/emailreport.pdf',function(err){
+//         if(err) return console.log(err);
+//         console.log('file deleted successfully');
+//    }); 
+  
     var date = new Date();
     var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
     var starttimeDiff = Math.abs(firstDay.getTime() - date.getTime());
@@ -268,5 +277,8 @@ function sendEmail() {
         });
     });
 }
+
+
+
 
 sendEmail();

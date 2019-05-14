@@ -391,6 +391,7 @@
                 border-collapse: collapse;
                 width: 90%;
                 -webkit-print-color-adjust: exact;
+                margin-left: 25px;
 
             }
 
@@ -501,7 +502,7 @@
 <body style="background-color: #d1e3e885;">
 
 
-    <div class="container" style="margin:0;padding:0;">
+    <div class="container">
         <div class="row">
 
 
@@ -583,7 +584,7 @@
             </div>
 
 
-            <%if(failedTasksAndIncidentLastday.length>0){%>
+            <!-- <%if(failedTasksAndIncidentLastday.length>0){%>
             <div>
                 <h4 style="padding-left: 11px;"><b style=" letter-spacing: 2px;
                font-family: Montserrat,sans-serif;">Failed
@@ -628,7 +629,7 @@
                 </table>
 
             </div>
-            <%}%>
+            <%}%> -->
 
             <div>
                 <h3 style="padding-left: 11px;"><b style="border-bottom: 1px solid #ccc; letter-spacing: 2px;
@@ -806,7 +807,7 @@
 
                     <% for (var i = 0; i < arrforageingtask.length; /* I save the data in a variable 'quotation', I don't know how you named your variable  */  i++) { %>
                     <%if(i%2==0){%>
-                    <tr style="background-color: #4e557e78">
+                    <tr style="background-color: #5b619478">
 
                         <%}else{%>
                     <tr>
@@ -852,6 +853,7 @@
                     <tr>
                         <th>BOT Name</th>
                         <th>Automated Tickets Current Month</th>
+                        <th>Tickets which required Human Intervention</th>
                         <th>Automated Tickets Past Six Month</th>
                     </tr>
 
@@ -868,6 +870,9 @@
                         </td>
                         <td>
                             <%= arrforindividualBOTcount[i].countcurrMonth %>
+                        </td>
+                        <td>
+                            <%= arrforindividualBOTcount[i].failed %>
                         </td>
                         <td>
                             <%= arrforindividualBOTcount[i].countpastSixMonths %>

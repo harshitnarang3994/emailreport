@@ -186,7 +186,7 @@ function calculatethefailedstatusBycallingScholastic(taskandincidentdata, callba
 function calculateTaskStatisticsForPastSixMOnths(assignmentgroup, callback) {
     console.log("inside task");
     var diff = 0;
-    var urlfortask = `https://scholastic.service-now.com/sc_task.do?CSV&sysparm_fields=sys_updated_on,state,assigned_to,short_description,number,closed_by,sys_id,assignment_group,closed_at,u_cat_item&sysparm_query=sys_updated_onBETWEENjavascript:gs.daysAgoStart(180)@javascript:gs.daysAgoEnd(0)^assignment_group=` + assignmentgroup;
+    var urlfortask = `https://scholastic.service-now.com/sc_task.do?CSV&sysparm_fields=sys_updated_on,state,assigned_to,short_description,number,closed_by,sys_id,assignment_group,closed_at,u_cat_item,closed_by&sysparm_query=sys_updated_onBETWEENjavascript:gs.daysAgoStart(180)@javascript:gs.daysAgoEnd(0)^assignment_group=` + assignmentgroup;
     var options = {
         url: urlfortask,
         headers: {
@@ -245,7 +245,8 @@ function calculateTaskStatisticsForPastSixMOnths(assignmentgroup, callback) {
                     botgraph_data[key] = {
 
                         automatedCount: 0,
-                        automatedCountHalfyearly: 0
+                        automatedCountHalfyearly: 0,
+                        failedCount: 0
 
                     };
                 }
@@ -505,7 +506,18 @@ function calculateTaskStatisticsForPastSixMOnths(assignmentgroup, callback) {
 
                             // arrforlastday.push(objforlastday);
 
+                            if (data[i]["state"] === "Closed Complete" && data[i]['closed_by'] != "TDMS AutoBOT") {
+                                botgraph_data[appConfig[isTerminate].botid].failedCount += 1;
+                            }
+
+
+
                             if (data[i]["state"] != "Closed Complete") {
+
+                                // For the additional column which require human intervention add the code here
+
+
+
                                 objforcurrMonth.name = appConfig[isTerminate].botid
                                 console.log(data[i]["number"])
                                 objforcurrMonth.tasknumber = data[i]["number"];
@@ -546,6 +558,8 @@ function calculateTaskStatisticsForPastSixMOnths(assignmentgroup, callback) {
 
 
                         if (appConfig[data[i]["short_description"]] && appConfig[data[i]["short_description"]].automated === true && data[i]["state"] != "Closed Complete") {
+
+                          
                             objforcurrMonth.name = appConfig[data[i]["short_description"]].botid
                             objforcurrMonth.tasknumber = data[i]["number"];
                             console.log(data[i]["number"])
@@ -564,6 +578,12 @@ function calculateTaskStatisticsForPastSixMOnths(assignmentgroup, callback) {
 
 
                         }
+                         //This is the data where human intervention was required
+                        if (appConfig[data[i]["short_description"]] && appConfig[data[i]["short_description"]].automated === true && data[i]["state"] === "Closed Complete" && data[i]['closed_by'] != "TDMS AutoBOT" && data[i]['closed_by'] != "") {
+                        
+                            botgraph_data[appConfig[data[i]["short_description"]].botid].failedCount += 1;
+                        
+                    }
 
                         if (appConfig[data[i]["short_description"]] && data[i]["state"] === "Closed Complete" && appConfig[data[i]["short_description"]].automated === true && data[i]["assigned_to"] === "TDMS AutoBOT") {
                             // per BOT
@@ -753,7 +773,8 @@ function calculateIncidentStatisticsForPastSixMonths(datas, option, assignmentgr
                 datas.botgraph_data['adaccount'] = {
                     // for six month put another count as automatedCountsixMonth
                     automatedCount: 0,
-                    automatedCountHalfyearly: 0
+                    automatedCountHalfyearly: 0,
+                    failedCount: 0
                 };
 
                 for (var i = 0; i < data.length; i++) {
@@ -934,7 +955,7 @@ function calculateIncidentStatisticsForPastSixMonths(datas, option, assignmentgr
                             // objforcurrentMOnth.name = appConfig[item["short_description"]].category
                             // objforcurrentMOnth.tasknumber = item["number"];
                             // arrforFailedTaskCurrentMOnth.push(objforcurrentMOnth);
-
+                            datas.botgraph_data['adaccount'].failedCount += 1;
                             countfailincident++
                         }
 
@@ -992,7 +1013,7 @@ function calculateIncidentStatisticsForPastSixMonths(datas, option, assignmentgr
                     objforbotcount.name = key
                     objforbotcount.countcurrMonth = datas.botgraph_data[key].automatedCount
                     objforbotcount.countpastSixMonths = datas.botgraph_data[key].automatedCountHalfyearly
-
+                    objforbotcount.failed = datas.botgraph_data[key].failedCount
                     arrforbotcount.push(objforbotcount);
 
                 }
@@ -1595,7 +1616,7 @@ function makepostrequest(url) {
 
         request(options, function (error, response, body) {
             if (error) {
-                
+
                 reject(error);
             } else {
                 console.log(body);
