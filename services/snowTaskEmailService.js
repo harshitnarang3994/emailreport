@@ -237,8 +237,11 @@ function calculateTaskStatisticsForPastSixMOnths(assignmentgroup, callback) {
                         botarr.push(appConfig[data[i]['short_description']].botid)
                     }
                 }
-
+                // For Termination
+                botarr.push("ad_disable_user")
+                botarr.push("as400_profile_remove")
                 var uniquebots = botarr.filter(onlyUnique);
+                console.log("-09-" + uniquebots)
                 var botgraph_data = {};
 
                 for (var key of uniquebots) {
@@ -307,7 +310,7 @@ function calculateTaskStatisticsForPastSixMOnths(assignmentgroup, callback) {
 
                         if ((isTerminate === "Security" || isTerminate === "Terminate" || isTerminate === "Delete")) {
 
-                            if (data[i]["state"] != "Closed Complete") {
+                            if (data[i]["state"] != "Closed Complete" && data[i]["assigned_to"] !="") {
                                 objforlastday.name = appConfig[isTerminate].botid
                                 objforlastday.tasknumber = data[i]["number"];
                                 objforlastday.shortdescription = isTerminate;
@@ -335,7 +338,7 @@ function calculateTaskStatisticsForPastSixMOnths(assignmentgroup, callback) {
                         }
 
 
-                        if (appConfig[data[i]["short_description"]] && appConfig[data[i]["short_description"]].automated === true && data[i]["state"] != "Closed Complete") {
+                        if (appConfig[data[i]["short_description"]] && appConfig[data[i]["short_description"]].automated === true && data[i]["state"] != "Closed Complete" && data[i]["assigned_to"] !="") {
                             objforlastday.name = appConfig[data[i]["short_description"]].botid
                             objforlastday.tasknumber = data[i]["number"];
                             objforlastday.shortdescription = data[i]["short_description"];
@@ -375,7 +378,7 @@ function calculateTaskStatisticsForPastSixMOnths(assignmentgroup, callback) {
 
                         if ((isTerminate === "Security" || isTerminate === "Terminate" || isTerminate === "Delete")) {
 
-                            if (data[i]["state"] != "Closed Complete") {
+                            if (data[i]["state"] != "Closed Complete" && data[i]["assigned_to"] !="") {
                                 objforlastday.name = appConfig[isTerminate].botid
                                 objforlastday.tasknumber = data[i]["number"];
                                 objforlastday.shortdescription = isTerminate;
@@ -399,7 +402,7 @@ function calculateTaskStatisticsForPastSixMOnths(assignmentgroup, callback) {
                         }
 
 
-                        if (appConfig[data[i]["short_description"]] && appConfig[data[i]["short_description"]].automated === true && data[i]["state"] != "Closed Complete") {
+                        if (appConfig[data[i]["short_description"]] && appConfig[data[i]["short_description"]].automated === true && data[i]["state"] != "Closed Complete" &&  data[i]["assigned_to"] !="") {
                             objforlastday.name = appConfig[data[i]["short_description"]].botid
                             objforlastday.tasknumber = data[i]["number"];
                             objforlastday.shortdescription = data[i]["short_description"];
@@ -443,7 +446,7 @@ function calculateTaskStatisticsForPastSixMOnths(assignmentgroup, callback) {
 
                         if ((isTerminate === "Security" || isTerminate === "Terminate" || isTerminate === "Delete")) {
 
-                            if (data[i]["state"] != "Closed Complete") {
+                            if (data[i]["state"] != "Closed Complete" && data[i]["assigned_to"] !="") {
 
 
                                 countoffailtaskLastWeek++
@@ -462,7 +465,7 @@ function calculateTaskStatisticsForPastSixMOnths(assignmentgroup, callback) {
                         }
 
 
-                        if (appConfig[data[i]["short_description"]] && appConfig[data[i]["short_description"]].automated === true && data[i]["state"] != "Closed Complete") {
+                        if (appConfig[data[i]["short_description"]] && appConfig[data[i]["short_description"]].automated === true && data[i]["state"] != "Closed Complete" && data[i]["assigned_to"] !="") {
 
                             countoffailtaskLastWeek++
                         }
@@ -507,12 +510,31 @@ function calculateTaskStatisticsForPastSixMOnths(assignmentgroup, callback) {
                             // arrforlastday.push(objforlastday);
 
                             if (data[i]["state"] === "Closed Complete" && data[i]['closed_by'] != "TDMS AutoBOT") {
-                                botgraph_data[appConfig[isTerminate].botid].failedCount += 1;
+
+
+                                //Here Just the add the filter condition for BOT
+                                var res = data[i]["short_description"].substring(0, 28);
+                                console.log("abcd" + res);
+                                if (res === "Terminate Employee AS400 Acc") {
+                                    botgraph_data[appConfig[res].botid].failedCount += 1;
+                                }
+                                else if (res === "Terminate Non-Employee AS400") {
+                                    botgraph_data[appConfig[res].botid].failedCount += 1;
+                                }
+                                else if (res === "Terminate Employee Google Acc") {
+                                    botgraph_data[appConfig[res].botid].failedCount += 1;
+                                }
+
+                                else {
+                                    // console.log(appConfig[isTerminate]);
+                                    botgraph_data[appConfig[isTerminate].botid].failedCount += 1;
+                                }
+
                             }
 
 
 
-                            if (data[i]["state"] != "Closed Complete") {
+                            if (data[i]["state"] != "Closed Complete" && data[i]["assigned_to"] !="") {
 
                                 // For the additional column which require human intervention add the code here
 
@@ -538,7 +560,23 @@ function calculateTaskStatisticsForPastSixMOnths(assignmentgroup, callback) {
 
                                 countCurrentMonthTaskautomated++
                                 graph_data['TDMS AutoBOT'].countOfCloseTask += 1;
-                                botgraph_data[appConfig[isTerminate].botid].automatedCount += 1;
+
+                                var res = data[i]["short_description"].substring(0, 28);
+                                console.log("abcd" + res);
+                                if (res === "Terminate Employee AS400 Acc") {
+                                    botgraph_data[appConfig[res].botid].automatedCount += 1;
+                                }
+                                else if (res === "Terminate Non-Employee AS400") {
+                                    botgraph_data[appConfig[res].botid].automatedCount += 1;
+                                }
+                                else if (res === "Terminate Employee Google Acc") {
+                                    botgraph_data[appConfig[res].botid].automatedCount += 1;
+                                } else {
+                                    botgraph_data[appConfig[isTerminate].botid].automatedCount += 1;
+                                }
+
+
+
 
                                 if (countTaskMonth[indexformonth] == null || countTaskMonth[indexformonth] == undefined) { countTaskMonth[indexformonth] = 1; }
 
@@ -557,9 +595,9 @@ function calculateTaskStatisticsForPastSixMOnths(assignmentgroup, callback) {
 
 
 
-                        if (appConfig[data[i]["short_description"]] && appConfig[data[i]["short_description"]].automated === true && data[i]["state"] != "Closed Complete") {
+                        if (appConfig[data[i]["short_description"]] && appConfig[data[i]["short_description"]].automated === true && data[i]["state"] != "Closed Complete" && data[i]["assigned_to"] !="") {
 
-                          
+
                             objforcurrMonth.name = appConfig[data[i]["short_description"]].botid
                             objforcurrMonth.tasknumber = data[i]["number"];
                             console.log(data[i]["number"])
@@ -578,12 +616,12 @@ function calculateTaskStatisticsForPastSixMOnths(assignmentgroup, callback) {
 
 
                         }
-                         //This is the data where human intervention was required
+                        //This is the data where human intervention was required
                         if (appConfig[data[i]["short_description"]] && appConfig[data[i]["short_description"]].automated === true && data[i]["state"] === "Closed Complete" && data[i]['closed_by'] != "TDMS AutoBOT" && data[i]['closed_by'] != "") {
-                        
+
                             botgraph_data[appConfig[data[i]["short_description"]].botid].failedCount += 1;
-                        
-                    }
+
+                        }
 
                         if (appConfig[data[i]["short_description"]] && data[i]["state"] === "Closed Complete" && appConfig[data[i]["short_description"]].automated === true && data[i]["assigned_to"] === "TDMS AutoBOT") {
                             // per BOT
@@ -1378,8 +1416,26 @@ function readCategoryFromConfig(data, url, callback) {
 
                         if (jsonArrayObj[i]["state"] != "Closed Complete" && jsonArrayObj[i]["state"] != "Closed Incomplete" && hours > 24) {
 
+                            var res = jsonArrayObj[i]["short_description"].substring(0, 28);
+                          
+                            if (res === "Terminate Employee AS400 Acc") {
+                                objforcurrMonth.botname = appConfig[res].botid
+                            }
+                            else if (res === "Terminate Non-Employee AS400") {
+                                objforcurrMonth.botname = appConfig[res].botid
+                            }
+                            else if (res === "Terminate Employee Google Acc") {
+                                objforcurrMonth.botname = appConfig[res].botid
+                            }
+
+                            else {
+                                // console.log(appConfig[isTerminate]);
+                                objforcurrMonth.botname = appConfig[isTerminate].botid
+                            }   
+                          
+                          
                             console.log("-----0" + jsonArrayObj[i]["sys_updated_on"])
-                            objforcurrMonth.botname = appConfig[isTerminate].botid
+                            
                             objforcurrMonth.tasknumber = jsonArrayObj[i]["number"];
                             objforcurrMonth.shortdescription = jsonArrayObj[i]["short_description"];
                             objforcurrMonth.sysid = jsonArrayObj[i]["sys_id"];

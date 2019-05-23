@@ -110,11 +110,11 @@ function uploadfiles(auth) {
 //1kzSgbYwHT4ZEOV6sEIqFgkCBmFqLKRkB
 function sendEmail() {
   
-//      Delete the old pdf file
-//     fs.unlink('./temp/emailreport.pdf',function(err){
-//         if(err) return console.log(err);
-//         console.log('file deleted successfully');
-//    }); 
+    // Delete the old pdf file
+    fs.unlink('./temp/emailreport.pdf',function(err){
+        if(err) return console.log(err);
+        console.log('file deleted successfully');
+   }); 
   
     var date = new Date();
     var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
