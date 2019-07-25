@@ -168,16 +168,6 @@ function sendEmail() {
                 } else {
                   console.log("Email Sent to user " + info.response);
 
-                  // Uploading pdf to google drive
-                  fs.readFile("credentials.json", (err, content) => {
-                    if (err)
-                      return console.log(
-                        "Error loading client secret file:",
-                        err
-                      );
-                    // Authorize a client with credentials, then call the Google Drive API.
-                    authorize(JSON.parse(content), uploadfiles);
-                  });
                   res.json({ Message: "Email is sent to user" });
                 }
               });
