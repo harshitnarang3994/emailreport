@@ -79,6 +79,7 @@ function sendEmail() {
             return console.log(err);
           }
           console.log("The file was saved!");
+          logger.debug("The template.htmls file is saved");
           puppeteer
             .launch({
               headless: true,
@@ -93,6 +94,7 @@ function sendEmail() {
             )
             .then(() => {
               console.log("in browser");
+              logger.debug("Pdf generation is completed");
               _browser.close();
 
               var MailOptions = {
@@ -162,10 +164,14 @@ function sendEmail() {
                 ]
               };
 
+              logger.debug("Added the pdf as attachment in the mail");
+
               transporter.sendMail(MailOptions, function(error, info) {
                 if (error) {
                   console.log("Email Error " + error);
+                  logger.debug("Email Error " + error);
                 } else {
+                  logger.debug("Email Sent to user " + info.response);
                   console.log("Email Sent to user " + info.response);
 
                   res.json({ Message: "Email is sent to user" });

@@ -132,12 +132,7 @@ function calculatethefailedstatusBycallingScholastic(
               appConfig[arritem.shortdescription].botid +
               "/bot-history"
           );
-          logger.debug(
-            appConfig.scholasticApi +
-              "/bot/" +
-              appConfig[arritem.shortdescription].botid +
-              "/bot-history"
-          );
+
           //appConfig[arritem.shortdescription].botid
 
           var id = "";
@@ -170,17 +165,12 @@ function calculatethefailedstatusBycallingScholastic(
             async.forEach(
               obj.botHistory,
               function(item, cbForReason) {
-                logger.debug(
-                  "ticket NUmber" +
-                    item.auditTrailConfig.serviceNowTicketRefObj.ticketNo
-                );
-
                 logger.debug(arritem.sysid);
                 if (
                   item.auditTrailConfig.serviceNowTicketRefObj.ticketNo ===
                   arritem.sysid
                 ) {
-                  logger.debug("success");
+                  // logger.debug("success");
                   flag = true;
                 }
 
@@ -191,10 +181,10 @@ function calculatethefailedstatusBycallingScholastic(
                   console.log("error in iteration");
                 } else {
                   if (flag) {
-                    logger.debug("TRiggered but failed");
+                    // logger.debug("TRiggered but failed");
                     arritem.reason = "Triggered but failed";
                   } else {
-                    logger.debug("Not Triggered");
+                    // logger.debug("Not Triggered");
                     arritem.reason = "Not Triggered";
                   }
                   cb();

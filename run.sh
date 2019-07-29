@@ -1,5 +1,5 @@
 
-docker  run  --rm -v $PWD:/code -w /code -i -t sendmail:latest /bin/bash 
+docker  run  --rm -v $PWD:/code -w /code -i -t sendmail:latest node sendmail.js
 
     
 
