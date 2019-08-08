@@ -26,6 +26,12 @@ function sendEmail() {
   var _browser;
   var _page;
 
+  // Object
+
+  var objForTransport = appConfig.objForTransport;
+
+  logger.debug(objForTransport);
+
   logger.debug("difference of days" + startdiffdays);
   console.log("difference of days" + startdiffdays);
   // We can add the assignment group here
@@ -36,13 +42,7 @@ function sendEmail() {
     queryobjfortabularmail.enddiff,
     queryobjfortabularmail.assignmentgroup,
     function(err, result) {
-      var transporter = nodeMailer.createTransport({
-        service: "Gmail",
-        auth: {
-          user: appConfig.SenderEmailAddress,
-          pass: appConfig.SenderEmailPassword
-        }
-      });
+      var transporter = nodeMailer.createTransport(objForTransport);
       ejs.renderFile("./temp/template.ejs", result, function(err, html) {
         var html2 =
           html +
