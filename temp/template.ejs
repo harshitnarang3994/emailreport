@@ -354,8 +354,17 @@
       }
 
       @media print {
-        div {
-          page-break-inside: avoid;
+        div.productivity {
+          page-break-before: always;
+        }
+        div.reassignment {
+          page-break-before: always;
+        }
+        div.ageing {
+          page-break-before: always;
+        }
+        div.volumeTrends {
+          page-break-before: always;
         }
       }
 
@@ -472,9 +481,9 @@
 
   <body style="background-color: #d1e3e885;">
     <div class="container">
-      <div
-        class="row clearfix"
-        style="    border: 0;
+      <div class="row">
+        <div
+          style="    border: 0;
          font-size: 15px!important;
          line-height: 1.42857143!important;
          letter-spacing: 2px;
@@ -484,91 +493,91 @@
          color: #fff;
          padding: 6px;
          text-align: left;"
-      >
-        SERVICENOW BOTS AUTOMATION REPORT FOR THE MONTH OF <%= currentmonth%>
-        TILL DATE- <%= todaydate%>
-      </div>
-      <div style="clear: both;"></div>
-      <div style="margin-top: 28px;" class="row">
-        <!-- <h3 class="font-family" style="    padding-left: 11px;">Group -
+        >
+          SERVICENOW BOTS AUTOMATION REPORT FOR THE MONTH OF <%= currentmonth%>
+          TILL DATE- <%= todaydate%>
+        </div>
+
+        <div style="margin-top: 50px;">
+          <!-- <h3 class="font-family" style="    padding-left: 11px;">Group -
                     <%= groupname%>
                 </h3> -->
-        <h3
-          style="border-bottom: 1px solid #ccc;    padding-left: 11px; letter-spacing: 2px;
+          <h3
+            style="border-bottom: 1px solid #ccc;    padding-left: 11px; letter-spacing: 2px;
             font-family: Montserrat,sans-serif;"
-        >
-          BOT Statistics Last Day
-        </h3>
-
-        <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
-          <div
-            class="cursor dashboard-stats__item dashboard-stats__item_blue"
-            style="height: 72px;"
           >
-            <h3 class="dashboard-stats__title" style="margin-bottom: -10px;">
-              <span class="count-to ng-binding ng-scope">
-                <%= lastdayTableStatistics[0].inboundTickets %></span
-              ><!-- end ngIf: !isBotDetailsLoading -->
-              <small>INBOUND TICKETS</small>
-            </h3>
+            BOT STATISTICS LAST DAY
+          </h3>
+
+          <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
+            <div
+              class="cursor dashboard-stats__item dashboard-stats__item_blue"
+              style="height: 72px;"
+            >
+              <h3 class="dashboard-stats__title" style="margin-bottom: -10px;">
+                <span class="count-to ng-binding ng-scope">
+                  <%= lastdayTableStatistics[0].inboundTickets %></span
+                ><!-- end ngIf: !isBotDetailsLoading -->
+                <small>INBOUND TICKETS</small>
+              </h3>
+            </div>
+          </div>
+          <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
+            <div
+              class="cursor dashboard-stats__item dashboard-stats__item_green"
+              style="height: 72px;"
+            >
+              <h3 class="dashboard-stats__title" style="margin-bottom: -10px;">
+                <span class="count-to ng-binding ng-scope">
+                  <%= lastdayTableStatistics[0].Botassigned %></span
+                ><!-- end ngIf: !isBotDetailsLoading -->
+                <small>BOTS ASSIGNED TICKETS</small>
+              </h3>
+            </div>
+          </div>
+
+          <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
+            <div
+              class="cursor dashboard-stats__item dashboard-stats__item_red"
+              style="height: 72px;"
+            >
+              <h3 class="dashboard-stats__title" style="margin-bottom: -10px;">
+                <span class="count-to ng-binding ng-scope">
+                  <%= lastdayTableStatistics[0].automatedTickets %></span
+                ><!-- end ngIf: !isBotDetailsLoading -->
+                <small>TICKETS AUTOMATED</small>
+              </h3>
+            </div>
+          </div>
+
+          <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
+            <div
+              class="cursor dashboard-stats__item dashboard-stats__item_bg-blue"
+            >
+              <h3 class="dashboard-stats__title">
+                <span class="count-to ng-binding ng-scope">
+                  <%= lastdayTableStatistics[0].failtaskandincident %></span
+                ><!-- end ngIf: !isBotDetailsLoading -->
+                <small> Reassigned Tickets</small>
+              </h3>
+            </div>
+          </div>
+
+          <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
+            <div
+              class="cursor dashboard-stats__item dashboard-stats__item_orange"
+            >
+              <h3 class="dashboard-stats__title">
+                <span class="count-to ng-binding ng-scope">
+                  <%= lastdayTableStatistics[0].BOTvsFTE %></span
+                ><!-- end ngIf: !isBotDetailsLoading -->
+                <small>BOT VS FTE</small>
+              </h3>
+            </div>
           </div>
         </div>
-        <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
-          <div
-            class="cursor dashboard-stats__item dashboard-stats__item_green"
-            style="height: 72px;"
-          >
-            <h3 class="dashboard-stats__title" style="margin-bottom: -10px;">
-              <span class="count-to ng-binding ng-scope">
-                <%= lastdayTableStatistics[0].Botassigned %></span
-              ><!-- end ngIf: !isBotDetailsLoading -->
-              <small>BOTS ASSIGNED TICKETS</small>
-            </h3>
-          </div>
-        </div>
-
-        <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
-          <div
-            class="cursor dashboard-stats__item dashboard-stats__item_red"
-            style="height: 72px;"
-          >
-            <h3 class="dashboard-stats__title" style="margin-bottom: -10px;">
-              <span class="count-to ng-binding ng-scope">
-                <%= lastdayTableStatistics[0].automatedTickets %></span
-              ><!-- end ngIf: !isBotDetailsLoading -->
-              <small>TICKETS AUTOMATED</small>
-            </h3>
-          </div>
-        </div>
-
-        <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
-          <div
-            class="cursor dashboard-stats__item dashboard-stats__item_bg-blue"
-          >
-            <h3 class="dashboard-stats__title">
-              <span class="count-to ng-binding ng-scope">
-                <%= lastdayTableStatistics[0].failtaskandincident %></span
-              ><!-- end ngIf: !isBotDetailsLoading -->
-              <small> Reassigned Tickets</small>
-            </h3>
-          </div>
-        </div>
-
-        <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
-          <div
-            class="cursor dashboard-stats__item dashboard-stats__item_orange"
-          >
-            <h3 class="dashboard-stats__title">
-              <span class="count-to ng-binding ng-scope">
-                <%= lastdayTableStatistics[0].BOTvsFTE %></span
-              ><!-- end ngIf: !isBotDetailsLoading -->
-              <small>BOT VS FTE</small>
-            </h3>
-          </div>
-        </div>
-      </div>
-
-      <!-- <%if(failedTasksAndIncidentLastday.length>0){%>
+        <div style="clear: both"></div>
+        <!-- <%if(failedTasksAndIncidentLastday.length>0){%>
             <div>
                 <h4 style="padding-left: 11px;"><b style=" letter-spacing: 2px;
                font-family: Montserrat,sans-serif;">Failed
@@ -615,486 +624,537 @@
             </div>
             <%}%> -->
 
-      <!-- Template for past week -->
-      <div style="clear: both;"></div>
-      <div style="margin-top: 28px;" class="row">
-        <h3
-          style="border-bottom: 1px solid #ccc;padding-left: 11px; letter-spacing: 2px;
+        <!-- Template for past week -->
+
+        <div style="margin-top: 50px;">
+          <h3
+            style="border-bottom: 1px solid #ccc;padding-left: 11px; letter-spacing: 2px;
             font-family: Montserrat,sans-serif;"
-        >
-          BOT Statistics Last Week
-        </h3>
-        <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
-          <div class="cursor dashboard-stats__item dashboard-stats__item_blue">
-            <h3 class="dashboard-stats__title" style="margin-bottom: -10px;">
-              <span class="count-to ng-binding ng-scope">
-                <%= lastWeekTableStatistics[0].inboundTickets %></span
-              ><!-- end ngIf: !isBotDetailsLoading -->
-              <small>INBOUND TICKETS</small>
-            </h3>
-          </div>
-        </div>
-
-        <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
-          <div
-            class="cursor dashboard-stats__item dashboard-stats__item_green"
-            style="height: 72px;"
           >
-            <h3 class="dashboard-stats__title" style="margin-bottom: -10px;">
-              <span class="count-to ng-binding ng-scope">
-                <%= lastWeekTableStatistics[0].Botassigned %></span
-              ><!-- end ngIf: !isBotDetailsLoading -->
-              <small>BOTS ASSIGNED TICKETS</small>
-            </h3>
+            BOT STATISTICS LAST WEEK
+          </h3>
+          <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
+            <div
+              class="cursor dashboard-stats__item dashboard-stats__item_blue"
+            >
+              <h3 class="dashboard-stats__title" style="margin-bottom: -10px;">
+                <span class="count-to ng-binding ng-scope">
+                  <%= lastWeekTableStatistics[0].inboundTickets %></span
+                ><!-- end ngIf: !isBotDetailsLoading -->
+                <small>INBOUND TICKETS</small>
+              </h3>
+            </div>
+          </div>
+
+          <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
+            <div
+              class="cursor dashboard-stats__item dashboard-stats__item_green"
+              style="height: 72px;"
+            >
+              <h3 class="dashboard-stats__title" style="margin-bottom: -10px;">
+                <span class="count-to ng-binding ng-scope">
+                  <%= lastWeekTableStatistics[0].Botassigned %></span
+                ><!-- end ngIf: !isBotDetailsLoading -->
+                <small>BOTS ASSIGNED TICKETS</small>
+              </h3>
+            </div>
+          </div>
+
+          <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
+            <div class="cursor dashboard-stats__item dashboard-stats__item_red">
+              <h3 class="dashboard-stats__title" style="margin-bottom: -10px;">
+                <span class="count-to ng-binding ng-scope">
+                  <%= lastWeekTableStatistics[0].automatedTickets %></span
+                ><!-- end ngIf: !isBotDetailsLoading -->
+                <small>TICKETS AUTOMATED</small>
+              </h3>
+            </div>
+          </div>
+
+          <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
+            <div
+              class="cursor dashboard-stats__item dashboard-stats__item_bg-blue"
+            >
+              <h3 class="dashboard-stats__title">
+                <span class="count-to ng-binding ng-scope">
+                  <%= lastWeekTableStatistics[0].failtaskandincident %></span
+                ><!-- end ngIf: !isBotDetailsLoading -->
+                <small>Reassigned Tickets</small>
+              </h3>
+            </div>
+          </div>
+
+          <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
+            <div
+              class="cursor dashboard-stats__item dashboard-stats__item_orange"
+            >
+              <h3 class="dashboard-stats__title">
+                <span class="count-to ng-binding ng-scope">
+                  <%= lastWeekTableStatistics[0].BOTvsFTE %></span
+                ><!-- end ngIf: !isBotDetailsLoading -->
+                <small>BOT VS FTE</small>
+              </h3>
+            </div>
           </div>
         </div>
+        <div style="clear: both"></div>
 
-        <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
-          <div class="cursor dashboard-stats__item dashboard-stats__item_red">
-            <h3 class="dashboard-stats__title" style="margin-bottom: -10px;">
-              <span class="count-to ng-binding ng-scope">
-                <%= lastWeekTableStatistics[0].automatedTickets %></span
-              ><!-- end ngIf: !isBotDetailsLoading -->
-              <small>TICKETS AUTOMATED</small>
-            </h3>
-          </div>
-        </div>
-
-        <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
-          <div
-            class="cursor dashboard-stats__item dashboard-stats__item_bg-blue"
+        <!-- Template for current MOnth -->
+        <div style="margin-top: 50px;">
+          <h3
+            class="font-family"
+            style="border-bottom: 1px solid #ccc;padding-left: 11px;"
           >
-            <h3 class="dashboard-stats__title">
-              <span class="count-to ng-binding ng-scope">
-                <%= lastWeekTableStatistics[0].failtaskandincident %></span
-              ><!-- end ngIf: !isBotDetailsLoading -->
-              <small>Reassigned Tickets</small>
-            </h3>
+            BOT STATISTICS CURRENT MONTH TILL DATE
+          </h3>
+          <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12 clearfix">
+            <div
+              class="cursor dashboard-stats__item dashboard-stats__item_blue"
+            >
+              <h3 class="dashboard-stats__title" style="margin-bottom: -10px;">
+                <span class="count-to ng-binding ng-scope">
+                  <%= currentMonthstatisticstable[0].inboundTickets %></span
+                ><!-- end ngIf: !isBotDetailsLoading -->
+                <small>INBOUND TICKETS</small>
+              </h3>
+            </div>
+          </div>
+
+          <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12 clearfix">
+            <div
+              class="cursor dashboard-stats__item dashboard-stats__item_green"
+              style="height: 72px;"
+            >
+              <h3 class="dashboard-stats__title" style="margin-bottom: -10px;">
+                <span class="count-to ng-binding ng-scope">
+                  <%= currentMonthstatisticstable[0].Botassigned %></span
+                ><!-- end ngIf: !isBotDetailsLoading -->
+                <small>BOTS ASSIGNED TICKETS</small>
+              </h3>
+            </div>
+          </div>
+
+          <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12 clearfix">
+            <div class="cursor dashboard-stats__item dashboard-stats__item_red">
+              <h3 class="dashboard-stats__title" style="margin-bottom: -10px;">
+                <span class="count-to ng-binding ng-scope">
+                  <%= currentMonthstatisticstable[0].automatedTickets %></span
+                ><!-- end ngIf: !isBotDetailsLoading -->
+                <small>TICKETS AUTOMATED</small>
+              </h3>
+            </div>
+          </div>
+
+          <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12 clearfix">
+            <div
+              class="cursor dashboard-stats__item dashboard-stats__item_bg-blue"
+            >
+              <h3 class="dashboard-stats__title">
+                <span class="count-to ng-binding ng-scope">
+                  <%= currentMonthstatisticstable[0].failtaskandincident
+                  %></span
+                ><!-- end ngIf: !isBotDetailsLoading -->
+                <small>Reassigned Tickets</small>
+              </h3>
+            </div>
+          </div>
+
+          <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12 clearfix">
+            <div
+              class="cursor dashboard-stats__item dashboard-stats__item_orange"
+            >
+              <h3 class="dashboard-stats__title">
+                <span class="count-to ng-binding ng-scope">
+                  <%= currentMonthstatisticstable[0].BOTvsFTE %></span
+                ><!-- end ngIf: !isBotDetailsLoading -->
+                <small>BOT VS FTE</small>
+              </h3>
+            </div>
           </div>
         </div>
 
-        <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
-          <div
-            class="cursor dashboard-stats__item dashboard-stats__item_orange"
-          >
-            <h3 class="dashboard-stats__title">
-              <span class="count-to ng-binding ng-scope">
-                <%= lastWeekTableStatistics[0].BOTvsFTE %></span
-              ><!-- end ngIf: !isBotDetailsLoading -->
-              <small>BOT VS FTE</small>
-            </h3>
-          </div>
-        </div>
-      </div>
-      <div style="clear: both;"></div>
-      <!-- Template for current MOnth -->
-      <div style="margin-top: 28px;" class="row">
-        <h3
-          class="font-family"
-          style="border-bottom: 1px solid #ccc;padding-left: 11px;"
-        >
-          BOT Statistics Current Month Till Date
-        </h3>
-        <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12 clearfix">
-          <div class="cursor dashboard-stats__item dashboard-stats__item_blue">
-            <h3 class="dashboard-stats__title" style="margin-bottom: -10px;">
-              <span class="count-to ng-binding ng-scope">
-                <%= currentMonthstatisticstable[0].inboundTickets %></span
-              ><!-- end ngIf: !isBotDetailsLoading -->
-              <small>INBOUND TICKETS</small>
-            </h3>
-          </div>
-        </div>
-
-        <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12 clearfix">
-          <div
-            class="cursor dashboard-stats__item dashboard-stats__item_green"
-            style="height: 72px;"
-          >
-            <h3 class="dashboard-stats__title" style="margin-bottom: -10px;">
-              <span class="count-to ng-binding ng-scope">
-                <%= currentMonthstatisticstable[0].Botassigned %></span
-              ><!-- end ngIf: !isBotDetailsLoading -->
-              <small>BOTS ASSIGNED TICKETS</small>
-            </h3>
-          </div>
-        </div>
-
-        <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12 clearfix">
-          <div class="cursor dashboard-stats__item dashboard-stats__item_red">
-            <h3 class="dashboard-stats__title" style="margin-bottom: -10px;">
-              <span class="count-to ng-binding ng-scope">
-                <%= currentMonthstatisticstable[0].automatedTickets %></span
-              ><!-- end ngIf: !isBotDetailsLoading -->
-              <small>TICKETS AUTOMATED</small>
-            </h3>
-          </div>
-        </div>
-
-        <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12 clearfix">
-          <div
-            class="cursor dashboard-stats__item dashboard-stats__item_bg-blue"
-          >
-            <h3 class="dashboard-stats__title">
-              <span class="count-to ng-binding ng-scope">
-                <%= currentMonthstatisticstable[0].failtaskandincident %></span
-              ><!-- end ngIf: !isBotDetailsLoading -->
-              <small>Reassigned Tickets</small>
-            </h3>
-          </div>
-        </div>
-
-        <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12 clearfix">
-          <div
-            class="cursor dashboard-stats__item dashboard-stats__item_orange"
-          >
-            <h3 class="dashboard-stats__title">
-              <span class="count-to ng-binding ng-scope">
-                <%= currentMonthstatisticstable[0].BOTvsFTE %></span
-              ><!-- end ngIf: !isBotDetailsLoading -->
-              <small>BOT VS FTE</small>
-            </h3>
-          </div>
-        </div>
-      </div>
-      <div style="clear: both;"></div>
-      <div style="margin-top: 28px;" class="row">
-        <h3 style="padding-left: 11px;">
-          <b
-            style="border-bottom: 1px solid #ccc; letter-spacing: 2px;
+        <div class="productivity">
+          <h3 style="padding-left: 11px;">
+            <b
+              style="border-bottom: 1px solid #ccc; letter-spacing: 2px;
                font-family: Montserrat,sans-serif;"
-            >Resource Productivity</b
-          >
-        </h3>
-        <h4
-          style=" border-bottom: 1px solid #ccc;padding-left: 11px; letter-spacing: 2px;
+              >RESOURCE PRODUCTIVITY</b
+            >
+          </h3>
+          <h4
+            style=" border-bottom: 1px solid #ccc;padding-left: 11px; letter-spacing: 2px;
             font-family: Montserrat,sans-serif;"
-        >
-          <u>Total Resources- <%= resourcecount%></u>
-        </h4>
+          >
+            <u>Total Resources- <%= resourcecount%></u>
+          </h4>
 
-        <table class="uppertable">
-          <tr>
-            <th>Name</th>
+          <table class="uppertable">
+            <tr>
+              <th
+                style="    border-right: 1px solid black;
+                "
+              ></th>
+              <th
+                colspan="3"
+                style="    border-right: 1px solid black;
+               "
+              >
+                Last Day
+              </th>
+              <th
+                colspan="4"
+                style="    border-right: 1px solid black;
+               "
+              >
+                Last Month
+              </th>
+            </tr>
+            <tr>
+              <th>Name</th>
 
-            <th>Last Day Incidents</th>
-            <th>Last Day Tasks</th>
-            <th>Last Day Total</th>
-            <th>Monthly Incidents</th>
-            <th>Monthly Tasks</th>
-            <th>Monthly Total</th>
-            <th>Avg per day(Monthly)</th>
-          </tr>
+              <th>Incidents</th>
+              <th>Tasks</th>
+              <th>Total</th>
+              <th>Incidents</th>
+              <th>Tasks</th>
+              <th>Total</th>
+              <th>Avg per day(Monthly)</th>
+            </tr>
 
-          <% for (var i = 0; i < userTable.length; /* I save the data in a
-          variable 'quotation', I don't know how you named your variable */ i++)
-          { %>
+            <% for (var i = 0; i < userTable.length; /* I save the data in a
+            variable 'quotation', I don't know how you named your variable */
+            i++) { %>
 
-          <tr>
-            <td>
-              <b>
-                <%= userTable[i].name %>
-              </b>
-            </td>
+            <tr>
+              <td>
+                <b>
+                  <%= userTable[i].name %>
+                </b>
+              </td>
 
-            <td>
-              <%= userTable[i].incidentsLastday %>
-            </td>
-            <td>
-              <%= userTable[i].taskLastday %>
-            </td>
-            <td>
-              <%= userTable[i].totalLastDay %>
-            </td>
-            <td>
-              <%= userTable[i].incidents %>
-            </td>
-            <td>
-              <%= userTable[i].tasks %>
-            </td>
-            <td>
-              <%= userTable[i].total %>
-            </td>
-            <td bgcolor="#B8E9DE">
-              <%= userTable[i].avgperday %>
-            </td>
-          </tr>
-          <% } %>
-        </table>
-      </div>
+              <td>
+                <%= userTable[i].incidentsLastday %>
+              </td>
+              <td>
+                <%= userTable[i].taskLastday %>
+              </td>
+              <td>
+                <%= userTable[i].totalLastDay %>
+              </td>
+              <td>
+                <%= userTable[i].incidents %>
+              </td>
+              <td>
+                <%= userTable[i].tasks %>
+              </td>
+              <td>
+                <%= userTable[i].total %>
+              </td>
+              <td bgcolor="#B8E9DE">
+                <%= userTable[i].avgperday %>
+              </td>
+            </tr>
+            <% } %>
+          </table>
+        </div>
 
-      <!-- BOT EFFICENCY TABLE -->
-      <div style="clear: both;"></div>
-      <div style="margin-top: 28px;" class="row">
-        <h3
-          class="font-family"
-          style="border-bottom: 1px solid #ccc;padding-left: 11px;"
-        >
-          BOT Efficiency
-        </h3>
+        <!-- BOT EFFICENCY TABLE -->
+        <div style="clear: both"></div>
+        <div class="efficiency" style="margin-top: 37px;">
+          <h3
+            class="font-family"
+            style="border-bottom: 1px solid #ccc;padding-left: 11px;"
+          >
+            BOT EFFICIENCY
+          </h3>
 
-        <table class="uppertable">
-          <tr>
-            <th>BOT Name</th>
-            <th>Automated Tickets Last Day</th>
-            <th>Reassignment Tickets Last Day</th>
-            <th>Efficiency Last Day</th>
-            <th>Automated Tickets Current Month</th>
-            <th>Reassignment Tickets Current Month</th>
-            <th>Efficiency Last Month</th>
-          </tr>
+          <table class="uppertable">
+            <thead>
+              <tr>
+                <th
+                  scope="col"
+                  style="    border-right: 1px solid black;
+                    "
+                ></th>
+                <th
+                  colspan="3"
+                  style="    border-right: 1px solid black;
+                   "
+                >
+                  Last Day
+                </th>
+                <th
+                  colspan="3"
+                  style="    border-right: 1px solid black;
+                   "
+                >
+                  Last Month
+                </th>
+              </tr>
+              <tr>
+                <th>BOT Name</th>
+                <th>Automated Tickets</th>
+                <th>Reassignment Tickets</th>
+                <th>Efficiency</th>
+                <th>Automated Tickets</th>
+                <th>Reassignment Tickets</th>
+                <th>Efficiency</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for (var i = 0; i < arrforindividualBOTcount.length; /* I save
+              the data in a variable 'quotation', I don't know how you named
+              your variable */ i++) { %> <%if(i%2==0){%>
+              <tr style="background-color: #b8bcd278">
+                <%}else{%>
+              </tr>
 
-          <% for (var i = 0; i < arrforindividualBOTcount.length; /* I save the
-          data in a variable 'quotation', I don't know how you named your
-          variable */ i++) { %> <%if(i%2==0){%>
-          <tr style="background-color: #b8bcd278">
-            <%}else{%>
-          </tr>
+              <tr>
+                <%}%>
+                <td>
+                  <b>
+                    <%= arrforindividualBOTcount[i].name %>
+                  </b>
+                </td>
+                <td>
+                  <%= arrforindividualBOTcount[i].automatedCountLastDay %>
+                </td>
+                <td>
+                  <%= arrforindividualBOTcount[i].reassignmentCountLastDay %>
+                </td>
+                <%if(arrforindividualBOTcount[i].efficiencyLastDay >= 90){%>
+                <td>
+                  <%= arrforindividualBOTcount[i].efficiencyLastDay %> %
+                </td>
+                <%}else{%>
+                <td style="color: red">
+                  <%= arrforindividualBOTcount[i].efficiencyLastDay %> %
+                </td>
+                <%}%>
+                <td>
+                  <%= arrforindividualBOTcount[i].countcurrMonth %>
+                </td>
+                <td>
+                  <%= arrforindividualBOTcount[i].failed %>
+                </td>
+                <%if(arrforindividualBOTcount[i].efficiencyCurrentMonth >=
+                90){%>
+                <td>
+                  <%= arrforindividualBOTcount[i].efficiencyCurrentMonth %> %
+                </td>
+                <%}else{%>
+                <td style="color: red">
+                  <%= arrforindividualBOTcount[i].efficiencyCurrentMonth %> %
+                </td>
+                <%}%>
+              </tr>
+              <% } %>
+            </tbody>
+          </table>
 
-          <tr>
-            <%}%>
-            <td>
-              <b>
-                <%= arrforindividualBOTcount[i].name %>
-              </b>
-            </td>
-            <td>
-              <%= arrforindividualBOTcount[i].automatedCountLastDay %>
-            </td>
-            <td>
-              <%= arrforindividualBOTcount[i].reassignmentCountLastDay %>
-            </td>
-            <%if(arrforindividualBOTcount[i].efficiencyLastDay >= 90){%>
-            <td>
-              <%= arrforindividualBOTcount[i].efficiencyLastDay %> %
-            </td>
-            <%}else{%>
-            <td style="color: red">
-              <%= arrforindividualBOTcount[i].efficiencyLastDay %> %
-            </td>
-            <%}%>
-            <td>
-              <%= arrforindividualBOTcount[i].countcurrMonth %>
-            </td>
-            <td>
-              <%= arrforindividualBOTcount[i].failed %>
-            </td>
-            <%if(arrforindividualBOTcount[i].efficiencyCurrentMonth >= 90){%>
-            <td>
-              <%= arrforindividualBOTcount[i].efficiencyCurrentMonth %> %
-            </td>
-            <%}else{%>
-            <td style="color: red">
-              <%= arrforindividualBOTcount[i].efficiencyCurrentMonth %> %
-            </td>
-            <%}%>
-          </tr>
-          <% } %>
-        </table>
+          <p>
+            <b>* Red Color indicates less that 90% Efficiency that is target</b>
+          </p>
+        </div>
+        <div style="clear: both"></div>
+        <!-- TASK Reassignment Last Day Data -->
+        <div class="reassignment">
+          <h3
+            class="font-family"
+            style="border-bottom: 1px solid #ccc;padding-left: 11px;"
+          >
+            BOT REASSIGNED TICKETS LAST DAY
+          </h3>
 
-        <p>
-          <b>* Red Color indicates less that 90% Efficiency that is target</b>
-        </p>
-      </div>
-      <div style="clear: both;"></div>
-      <!-- TASK Reassignment Last Day Data -->
-      <div style="margin-top: 28px;" class="row ">
-        <h3
-          class="font-family"
-          style="border-bottom: 1px solid #ccc;padding-left: 11px;"
-        >
-          BOT Reassigned Tickets Last Day
-        </h3>
+          <table class="uppertable">
+            <tr>
+              <th>Task Number</th>
+              <th>Short Description</th>
+              <th>Assignment Group</th>
+              <th>Catalog Item</th>
+              <th>Assigned To</th>
+            </tr>
 
-        <table class="uppertable">
-          <tr>
-            <th>Task Number</th>
-            <th>Short Description</th>
-            <th>Assignment Group</th>
-            <th>Catalog Item</th>
-            <th>Assigned To</th>
-          </tr>
+            <% for (var i = 0; i < arrfor_assignment.length; /* I save the data
+            in a variable 'quotation', I don't know how you named your variable
+            */ i++) { %> <%if(i%2==0){%>
+            <tr style="background-color: #5b619478">
+              <%}else{%>
+            </tr>
 
-          <% for (var i = 0; i < arrfor_assignment.length; /* I save the data in
-          a variable 'quotation', I don't know how you named your variable */
-          i++) { %> <%if(i%2==0){%>
-          <tr style="background-color: #5b619478">
-            <%}else{%>
-          </tr>
+            <tr>
+              <%}%>
 
-          <tr>
-            <%}%>
+              <td>
+                <a href="http://scholastic.service-now.com">
+                  <%= arrfor_assignment[i].tasknumber %>
+                </a>
+              </td>
+              <td>
+                <%= arrfor_assignment[i].shortdescription %>
+              </td>
 
-            <td>
-              <a href="http://scholastic.service-now.com">
-                <%= arrfor_assignment[i].tasknumber %>
-              </a>
-            </td>
-            <td>
-              <%= arrfor_assignment[i].shortdescription %>
-            </td>
+              <td>
+                <%= arrfor_assignment[i].assignment_group %>
+              </td>
+              <td>
+                <%= arrfor_assignment[i].catitem %>
+              </td>
+              <td>
+                <%= arrfor_assignment[i].assignedto %>
+              </td>
+            </tr>
+            <% } %>
+          </table>
+        </div>
+        <div style="clear: both"></div>
+        <!-- TASK Ageing Data -->
+        <div class="ageing">
+          <h3
+            class="font-family"
+            style="border-bottom: 1px solid #ccc;padding-left: 11px;"
+          >
+            BOT AGING DATA CURRENT MONTH ABOVE 24 HOURS
+          </h3>
 
-            <td>
-              <%= arrfor_assignment[i].assignment_group %>
-            </td>
-            <td>
-              <%= arrfor_assignment[i].catitem %>
-            </td>
-            <td>
-              <%= arrfor_assignment[i].assignedto %>
-            </td>
-          </tr>
-          <% } %>
-        </table>
-      </div>
-      <div style="clear: both;"></div>
-      <!-- TASK Ageing Data -->
-      <div style="margin-top: 28px;" class="row">
-        <h3
-          class="font-family"
-          style="border-bottom: 1px solid #ccc;padding-left: 11px;"
-        >
-          BOT Aging Data Current Month Above 24 Hours
-        </h3>
+          <table class="uppertable">
+            <tr>
+              <th>BOT Name</th>
+              <th>Task Number</th>
+              <th>Short Description</th>
+              <th>Age of Task</th>
+              <th>Assignment Group</th>
+              <th>Catalog Item</th>
+            </tr>
 
-        <table class="uppertable">
-          <tr>
-            <th>BOT Name</th>
-            <th>Task Number</th>
-            <th>Short Description</th>
-            <th>Age of Task</th>
-            <th>Assignment Group</th>
-            <th>Catalog Item</th>
-          </tr>
+            <% for (var i = 0; i < arrforageingtask.length; /* I save the data
+            in a variable 'quotation', I don't know how you named your variable
+            */ i++) { %> <%if(i%2==0){%>
+            <tr style="background-color: #5b619478">
+              <%}else{%>
+            </tr>
 
-          <% for (var i = 0; i < arrforageingtask.length; /* I save the data in
-          a variable 'quotation', I don't know how you named your variable */
-          i++) { %> <%if(i%2==0){%>
-          <tr style="background-color: #5b619478">
-            <%}else{%>
-          </tr>
+            <tr>
+              <%}%>
+              <td>
+                <b>
+                  <%= arrforageingtask[i].botname %>
+                </b>
+              </td>
+              <td>
+                <a href="http://scholastic.service-now.com">
+                  <%= arrforageingtask[i].tasknumber %>
+                </a>
+              </td>
+              <td>
+                <%= arrforageingtask[i].shortdescription %>
+              </td>
+              <td>
+                <%= arrforageingtask[i].age_of_task %>
+              </td>
+              <td>
+                <%= arrforageingtask[i].assignment_group %>
+              </td>
+              <td>
+                <%= arrforageingtask[i].catitem %>
+              </td>
+            </tr>
+            <% } %>
+          </table>
+        </div>
 
-          <tr>
-            <%}%>
-            <td>
-              <b>
-                <%= arrforageingtask[i].botname %>
-              </b>
-            </td>
-            <td>
-              <a href="http://scholastic.service-now.com">
-                <%= arrforageingtask[i].tasknumber %>
-              </a>
-            </td>
-            <td>
-              <%= arrforageingtask[i].shortdescription %>
-            </td>
-            <td>
-              <%= arrforageingtask[i].age_of_task %>
-            </td>
-            <td>
-              <%= arrforageingtask[i].assignment_group %>
-            </td>
-            <td>
-              <%= arrforageingtask[i].catitem %>
-            </td>
-          </tr>
-          <% } %>
-        </table>
-      </div>
+        <!-- ------------------------ -->
+        <div style="clear: both"></div>
+        <div class="volumeTrends">
+          <h3
+            class="font-family"
+            style="border-bottom: 1px solid #ccc;padding-left: 11px;"
+          >
+            BOT VOLUME TRENDS
+          </h3>
 
-      <!-- ------------------------ -->
-      <div style="clear: both;"></div>
-      <div style="margin-top: 28px;" class="row">
-        <h3
-          class="font-family"
-          style="border-bottom: 1px solid #ccc;padding-left: 11px;"
-        >
-          BOT Volume Trends
-        </h3>
+          <table class="uppertable">
+            <tr>
+              <th>BOT Name</th>
+              <th><%= monthArrayForLastSixMonth[5] %></th>
+              <th><%= monthArrayForLastSixMonth[4] %></th>
+              <th><%= monthArrayForLastSixMonth[3] %></th>
+              <th><%= monthArrayForLastSixMonth[2] %></th>
+              <th><%= monthArrayForLastSixMonth[1] %></th>
+              <th><%= monthArrayForLastSixMonth[0] %></th>
+            </tr>
 
-        <table class="uppertable">
-          <tr>
-            <th>BOT Name</th>
-            <th><%= monthArrayForLastSixMonth[5] %></th>
-            <th><%= monthArrayForLastSixMonth[4] %></th>
-            <th><%= monthArrayForLastSixMonth[3] %></th>
-            <th><%= monthArrayForLastSixMonth[2] %></th>
-            <th><%= monthArrayForLastSixMonth[1] %></th>
-            <th><%= monthArrayForLastSixMonth[0] %></th>
-          </tr>
+            <% for (var i = 0; i < arrforlastSixmonthBOTeffectivness.length;
+            i++) { %> <%if(i%2==0){%>
+            <tr style="background-color: #b8bcd278">
+              <%}else{%>
+            </tr>
 
-          <% for (var i = 0; i < arrforlastSixmonthBOTeffectivness.length; i++)
-          { %> <%if(i%2==0){%>
-          <tr style="background-color: #b8bcd278">
-            <%}else{%>
-          </tr>
+            <tr>
+              <%}%>
+              <td>
+                <b>
+                  <%= arrforlastSixmonthBOTeffectivness[i].name %>
+                </b>
+              </td>
 
-          <tr>
-            <%}%>
-            <td>
-              <b>
-                <%= arrforlastSixmonthBOTeffectivness[i].name %>
-              </b>
-            </td>
+              <td style="color: #66bb6a">
+                <%= arrforlastSixmonthBOTeffectivness[i].first %>
+              </td>
+              <%if(arrforlastSixmonthBOTeffectivness[i].first >
+              arrforlastSixmonthBOTeffectivness[i].second){%>
+              <td style="color: #f4511e">
+                <%= arrforlastSixmonthBOTeffectivness[i].second %>
+              </td>
+              <%}else{%>
+              <td style="color: #66bb6a">
+                <%= arrforlastSixmonthBOTeffectivness[i].second %>
+              </td>
+              <%}%> <%if(arrforlastSixmonthBOTeffectivness[i].second >
+              arrforlastSixmonthBOTeffectivness[i].third){%>
+              <td style="color: #f4511e">
+                <%= arrforlastSixmonthBOTeffectivness[i].third %>
+              </td>
+              <%}else{%>
+              <td style="color: #66bb6a">
+                <%= arrforlastSixmonthBOTeffectivness[i].third %>
+              </td>
+              <%}%> <%if(arrforlastSixmonthBOTeffectivness[i].third >
+              arrforlastSixmonthBOTeffectivness[i].fourth){%>
+              <td style="color: #f4511e">
+                <%= arrforlastSixmonthBOTeffectivness[i].fourth %>
+              </td>
+              <%}else{%>
+              <td style="color: #66bb6a">
+                <%= arrforlastSixmonthBOTeffectivness[i].fourth %>
+              </td>
+              <%}%> <%if(arrforlastSixmonthBOTeffectivness[i].fourth >
+              arrforlastSixmonthBOTeffectivness[i].fifth){%>
+              <td style="color: #f4511e">
+                <%= arrforlastSixmonthBOTeffectivness[i].fifth %>
+              </td>
+              <%}else{%>
+              <td style="color: #66bb6a">
+                <%= arrforlastSixmonthBOTeffectivness[i].fifth %>
+              </td>
+              <%}%> <%if(arrforlastSixmonthBOTeffectivness[i].fifth >
+              arrforlastSixmonthBOTeffectivness[i].sixth){%>
+              <td style="color: #f4511e">
+                <%= arrforlastSixmonthBOTeffectivness[i].sixth %>
+              </td>
+              <%}else{%>
+              <td style="color: #66bb6a">
+                <%= arrforlastSixmonthBOTeffectivness[i].sixth %>
+              </td>
+              <%}%>
+            </tr>
+            <% } %>
+          </table>
 
-            <td style="color: #66bb6a">
-              <%= arrforlastSixmonthBOTeffectivness[i].first %>
-            </td>
-            <%if(arrforlastSixmonthBOTeffectivness[i].first >
-            arrforlastSixmonthBOTeffectivness[i].second){%>
-            <td style="color: #f4511e">
-              <%= arrforlastSixmonthBOTeffectivness[i].second %>
-            </td>
-            <%}else{%>
-            <td style="color: #66bb6a">
-              <%= arrforlastSixmonthBOTeffectivness[i].second %>
-            </td>
-            <%}%> <%if(arrforlastSixmonthBOTeffectivness[i].second >
-            arrforlastSixmonthBOTeffectivness[i].third){%>
-            <td style="color: #f4511e">
-              <%= arrforlastSixmonthBOTeffectivness[i].third %>
-            </td>
-            <%}else{%>
-            <td style="color: #66bb6a">
-              <%= arrforlastSixmonthBOTeffectivness[i].third %>
-            </td>
-            <%}%> <%if(arrforlastSixmonthBOTeffectivness[i].third >
-            arrforlastSixmonthBOTeffectivness[i].fourth){%>
-            <td style="color: #f4511e">
-              <%= arrforlastSixmonthBOTeffectivness[i].fourth %>
-            </td>
-            <%}else{%>
-            <td style="color: #66bb6a">
-              <%= arrforlastSixmonthBOTeffectivness[i].fourth %>
-            </td>
-            <%}%> <%if(arrforlastSixmonthBOTeffectivness[i].fourth >
-            arrforlastSixmonthBOTeffectivness[i].fifth){%>
-            <td style="color: #f4511e">
-              <%= arrforlastSixmonthBOTeffectivness[i].fifth %>
-            </td>
-            <%}else{%>
-            <td style="color: #66bb6a">
-              <%= arrforlastSixmonthBOTeffectivness[i].fifth %>
-            </td>
-            <%}%> <%if(arrforlastSixmonthBOTeffectivness[i].fifth >
-            arrforlastSixmonthBOTeffectivness[i].sixth){%>
-            <td style="color: #f4511e">
-              <%= arrforlastSixmonthBOTeffectivness[i].sixth %>
-            </td>
-            <%}else{%>
-            <td style="color: #66bb6a">
-              <%= arrforlastSixmonthBOTeffectivness[i].sixth %>
-            </td>
-            <%}%>
-          </tr>
-          <% } %>
-        </table>
+          <p><b>* Red Color indicated reduction in trend</b></p>
+        </div>
 
-        <p><b>* Red Color indicated reduction in trend</b></p>
-      </div>
-
-      <!-- <div>
+        <!-- <div>
                 <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
                     <div style="background-color:aqua;   border-bottom-left-radius:50%;
             border-bottom-right-radius:50%;">
@@ -1126,12 +1186,7 @@
                 </div>
 
             </div> -->
+      </div>
     </div>
-
-    <div
-      style="
-         clear: both;
-     "
-    ></div>
   </body>
 </html>

@@ -1790,6 +1790,10 @@ function calculateIncidentStatisticsForPastSixMonths(
           arrforlastSixMonthBOTStatistics.push(objforlastSixMonthBOTStatistics);
         }
 
+        // let sortByAge = people.sort(function (p1, p2) {
+        //   return p1.age - p2.age;
+        // });
+
         datas.countLastdayTicketautomated =
           datas.countLastdayTaskautomated + countLastdayIncidentautomated;
         datas.countlastdayTicketmanual =
@@ -1995,7 +1999,12 @@ function creationofObjectforMail(taskandincidentData, callback) {
     failedTasksAndIncidentLastday: taskandincidentData.arrforLastdayData,
     lastdayTableStatistics: arrforLastDaytableStatistics,
     lastWeekTableStatistics: arrforLastWeektableStatistics,
-    arrforindividualBOTcount: taskandincidentData.arrforbotcount,
+    arrforindividualBOTcount: taskandincidentData.arrforbotcount.sort(function(
+      p1,
+      p2
+    ) {
+      return p2.countcurrMonth - p1.countcurrMonth;
+    }),
     arrforageingtask: taskandincidentData.arrforageingTask,
     arrforlastSixmonthBOTeffectivness:
       taskandincidentData.arrforlastSixMonthBOTStatistics,

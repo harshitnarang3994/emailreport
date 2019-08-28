@@ -46,7 +46,7 @@ function sendEmail() {
       ejs.renderFile("./temp/template.ejs", result, function(err, html) {
         var html2 =
           html +
-          "<div>" +
+          '<div class="row">' +
           '<div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">' +
           '<div style="background-color:aqua;   border-bottom-left-radius:50%;border-bottom-right-radius:50%;">' +
           '<h3 class="font-family" style="text-align: center;"><u>Automation Statistics For Current Month</u></h3>' +
@@ -104,7 +104,7 @@ function sendEmail() {
                 text: "Service Now Report for the current month",
                 html:
                   html +
-                  '<div class="row clearfix">' +
+                  '<div class="row">' +
                   '<div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">' +
                   '<div style="background-color:aqua;   border-bottom-left-radius:50%;border-bottom-right-radius:50%;">' +
                   '<h3 class="font-family" style="text-align: center;"><u>Automation Statistics For Current Month</u></h3>' +
